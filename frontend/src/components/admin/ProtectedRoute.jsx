@@ -11,6 +11,9 @@ const ProtectedRoute = ({children}) => {
         if(user === null || user.role !== 'recruiter'){
             navigate("/");
         }
+       //if(user === null || user.role !== 'admin'){
+         //navigate("/admin");
+     //  }
     },[]);
 
     return (

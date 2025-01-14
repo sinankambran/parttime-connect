@@ -1,3 +1,4 @@
+
 import { Job } from "../models/job.model.js";
 
 // admin post krega job
@@ -147,16 +148,22 @@ export const deletejob = async (req, res) => {
   }
 };
 
+
+
 export const updateJob = async (req, res) => {
   try {
     const jobId = req.params.id;
     const updates = req.body;
+
+    // Validate jobId
     if (!jobId) {
       return res.status(400).json({
         message: "Job ID is required.",
         success: false,
       });
     }
+
+    // Validate update payload
     if (!Object.keys(updates).length) {
       return res.status(400).json({
         message: "No updates provided.",
@@ -164,12 +171,14 @@ export const updateJob = async (req, res) => {
       });
     }
 
+    // Update the job
     const job = await Job.findByIdAndUpdate(
       jobId,
-      { $set: updates }, // Use `$set` to update only the provided fields
-      { new: true } // Return the updated job
+      { $set: updates }, // Only update specified fields
+      { new: true, runValidators: true } // Return the updated document
     );
 
+    // Handle case when job is not found
     if (!job) {
       return res.status(404).json({
         message: "Job not found.",
@@ -180,14 +189,16 @@ export const updateJob = async (req, res) => {
     // Respond with the updated job
     return res.status(200).json({
       message: "Job updated successfully.",
-      job,
       success: true,
+      job,
     });
   } catch (error) {
     console.error("Error updating job:", error);
     return res.status(500).json({
       message: "Internal Server Error.",
       success: false,
+      error: error.message,
     });
   }
 };
+

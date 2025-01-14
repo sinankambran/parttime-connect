@@ -88,6 +88,7 @@ const appRouter = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
+
   {
     path: "/admin/jobs/create",
     element: (
@@ -104,6 +105,28 @@ const appRouter = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
+
+  // recruiter ke liye yha se start hoga
+
+
+
+ {/* {
+    path: "/recruiter/jobs/:id",
+    element: (
+      <ProtectedRoute>
+        <RecruiterEditJob />
+      </ProtectedRoute>
+    ),
+  },
+
+  {
+    path: "/recruiter/jobs/:id/RecruiterApplicants",
+    element: (
+      <ProtectedRoute>
+        <RecruiterApplicants />
+      </ProtectedRoute>
+    ),
+  },*/}
 ]);
 function App() {
   return (
