@@ -1,7 +1,5 @@
-
 import { Job } from "../models/job.model.js";
 
-// admin post krega job
 export const postJob = async (req, res) => {
   try {
     const {
@@ -54,7 +52,7 @@ export const postJob = async (req, res) => {
     console.log(error);
   }
 };
-// student k liye
+
 export const getAllJobs = async (req, res) => {
   try {
     const keyword = req.query.keyword || "";
@@ -101,7 +99,7 @@ export const getJobById = async (req, res) => {
     console.log(error);
   }
 };
-// admin kitne job create kra hai abhi tk
+
 export const getAdminJobs = async (req, res) => {
   try {
     const adminId = req.id;
@@ -147,8 +145,6 @@ export const deletejob = async (req, res) => {
     });
   }
 };
-
-
 
 export const updateJob = async (req, res) => {
   try {
@@ -201,4 +197,3 @@ export const updateJob = async (req, res) => {
     });
   }
 };
-
