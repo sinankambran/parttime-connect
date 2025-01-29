@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../shared/Navbar";
+// import Navbar from "../shared/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -60,13 +60,14 @@ const EditJob = () => {
       }
     } catch (error) {
       console.error("Error during job update:", error);
-      toast.error(error.response?.data?.message || "An unexpected error occurred.");
+      toast.error(
+        error.response?.data?.message || "An unexpected error occurred."
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // Pre-fill form with existing job data
   useEffect(() => {
     if (singleJob) {
       setInput({
@@ -85,7 +86,7 @@ const EditJob = () => {
 
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="flex items-center justify-center w-screen my-10">
         <form
           onSubmit={submitHandler}
@@ -105,7 +106,15 @@ const EditJob = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-2">
-            {["title", "description", "requirements", "salary", "location", "jobType", "experience"].map((field) => (
+            {[
+              "title",
+              "description",
+              "requirements",
+              "salary",
+              "location",
+              "jobType",
+              "experience",
+            ].map((field) => (
               <div key={field}>
                 <Label>{field.charAt(0).toUpperCase() + field.slice(1)}</Label>
                 <Input
@@ -128,8 +137,16 @@ const EditJob = () => {
               />
             </div>
           </div>
-          <Button type="submit" className="w-full my-4 bg-[#3575e2]" disabled={loading}>
-            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Update"}
+          <Button
+            type="submit"
+            className="w-full my-4 bg-[#3575e2]"
+            disabled={loading}
+          >
+            {loading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              "Update"
+            )}
           </Button>
         </form>
       </div>
