@@ -102,23 +102,29 @@ export const getJobById = async (req, res) => {
 
 export const getAdminJobs = async (req, res) => {
   try {
-    const adminId = req.id;
-    const jobs = await Job.find({ created_by: adminId }).populate({
+    // Fetch all jobs from the database
+    const jobs = await Job.find({}).populate({
       path: "company",
-      createdAt: -1,
+      options: { sort: { createdAt: -1 } }, // Sort company data by createdAt in descending order
     });
-    if (!jobs) {
+
+    if (!jobs || jobs.length === 0) {
       return res.status(404).json({
-        message: "Jobs not found.",
+        message: "No jobs found.",
         success: false,
       });
     }
+
     return res.status(200).json({
       jobs,
       success: true,
     });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({
+      message: "An error occurred while fetching jobs.",
+      success: false,
+    });
   }
 };
 
@@ -197,3 +203,32 @@ export const updateJob = async (req, res) => {
     });
   }
 };
+
+export const getRecruiterJobs = async (req, res) => {
+  try {
+    const adminId = req.id;
+    // Fetch all jobs from the database
+    const jobs = await Job.find({created_by: adminId }).populate({
+      path: "company",
+      options: { sort: { createdAt: -1 } }, // Sort company data by createdAt in descending order
+    });
+
+    if (!jobs || jobs.length === 0) {
+      return res.status(404).json({
+        message: "No jobs found.",
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      jobs,
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "An error occurred while fetching jobs.",
+      success: false,
+    });
+  }
+}

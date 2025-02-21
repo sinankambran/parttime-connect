@@ -10,13 +10,18 @@ import { useNavigate } from 'react-router-dom'
 
 const Home = () => {
   useGetAllJobs();
-  const { user } = useSelector(store => store.auth);
+  const { user } = useSelector((store) => store.auth);
   const navigate = useNavigate();
   useEffect(() => {
-    if (user?.role === 'recruiter') {
-      navigate("/admin/companies");
+    // Only run the logic if `user` is available
+    if (user) {
+      if (user.role === "recruiter") {
+        navigate("/sample-recruiter");
+      } else if (user.role === "admin") {
+        navigate("/admin/companies");
+      }
     }
-  }, []);
+  }, [user, navigate])
   return (
     <div>
       {/* <Navbar /> */}

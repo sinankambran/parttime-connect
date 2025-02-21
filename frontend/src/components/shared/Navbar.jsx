@@ -82,7 +82,7 @@ const Navbar = () => {
           } md:flex md:items-center md:gap-12 absolute md:static top-16 left-0 w-full md:w-auto bg-white dark:bg-gray-800 shadow-md md:shadow-none z-50 p-4 md:p-0`}
         >
           <ul className="flex flex-col md:flex-row font-medium items-start md:items-center gap-4 md:gap-6 text-gray-600 dark:text-gray-300">
-            {user && user.role === "recruiter" ? (
+            {user && user.role === "admin" ? (
               <>
                 <li>
                   <Link

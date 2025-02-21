@@ -12,7 +12,7 @@
   "description": "",
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
-    "@strapi/strapi": "^5.7.0",
+    "@strapi/strapi": "^4.25.20",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
     "cookie-parser": "^1.4.7",

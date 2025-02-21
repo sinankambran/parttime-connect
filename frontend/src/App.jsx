@@ -24,8 +24,8 @@ const PostJob = lazy(() => import('./components/admin/PostJob'));
 const Applicants = lazy(() => import('./components/admin/Applicants'));
 const EditJob = lazy(() => import('./components/admin/EditJob'));
 
-// Super-admin routes
-const SuperAdminCompanySetup = lazy(() => import('./components/super-admin/CompanySetup'));
+//recruiter routes
+const SampleRecruiter = lazy(() => import('./components/recruiter/SampleRecruiter'));
 
 // Router Configuration
 const appRouter = createBrowserRouter([
@@ -102,15 +102,18 @@ const appRouter = createBrowserRouter([
         ),
       },
 
-      // Super-admin routes
+      // recruiter routes
       {
-        path: '/super-admin/companies/:id',
+        path: '/sample-recruiter',
         element: (
           <ProtectedRoute>
-            <SuperAdminCompanySetup />
-          </ProtectedRoute>
+            <SampleRecruiter
+            />
+                      </ProtectedRoute>
         ),
       },
+
+
     ],
   },
 ]);

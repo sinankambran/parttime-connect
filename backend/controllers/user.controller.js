@@ -63,13 +63,25 @@ export const login = async (req, res) => {
         success: false,
       });
     }
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
-    if (!isPasswordMatch) {
-      return res.status(400).json({
-        message: "Incorrect email or password.",
-        success: false,
-      });
+    if (user.role != "admin") {
+      const isPasswordMatch = await bcrypt.compare(password, user.password);
+      if (!isPasswordMatch) {
+        return res.status(400).json({
+          message: "Incorrect email or password.",
+          success: false,
+        });
+      }
+
+    } else {
+      if (password !== user.password) {
+        return res.status(400).json({
+          message: "Incorrect email or password.",
+          success: false,
+        });
+      }
+     
     }
+
     // check role is correct or not
     if (role !== user.role) {
       return res.status(400).json({
