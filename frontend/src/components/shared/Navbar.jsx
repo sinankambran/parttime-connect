@@ -101,6 +101,25 @@ const Navbar = () => {
                   </Link>
                 </li>
               </>
+            ) : user && user.role === "recruiter" ? (
+              <>
+                <li>
+                  <Link
+                    to="/sample-recruiter"
+                    className="hover:text-blue-600 dark:hover:text-blue-400 transition"
+                  >
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/recruiterjobs"
+                    className="hover:text-blue-600 dark:hover:text-blue-400 transition"
+                  >
+                    Jobs
+                  </Link>
+                </li>
+              </>
             ) : (
               <>
                 <li>
@@ -127,7 +146,6 @@ const Navbar = () => {
                     Browse
                   </Link>
                 </li>
-
                 {user && (
                   <li>
                     <Link
@@ -141,6 +159,7 @@ const Navbar = () => {
               </>
             )}
           </ul>
+
           {user ? (
             <Popover>
               <PopoverTrigger asChild>

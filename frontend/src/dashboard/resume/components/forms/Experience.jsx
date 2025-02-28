@@ -1,95 +1,110 @@
-
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import React, { useContext, useEffect, useState } from 'react'
-import RichTextEditor from '../RichTextEditor'
-import { ResumeInfoContext } from '@/context/ResumeInfoContext'
-import { useParams } from 'react-router-dom'
-import { toast } from 'sonner'
-import { LoaderCircle } from 'lucide-react'
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import RichTextEditor from "../RichTextEditor";
+import { ResumeInfoContext } from "@/context/ResumeInfoContext";
+import { useParams } from "react-router-dom";
+import { LoaderCircle } from "lucide-react";
+import { toast } from "sonner";
 
 const formField = {
-  title: '',
-  companyName: '',
-  city: '',
-  state: '',
-  startDate: '',
-  endDate: '',
-  workSummery: '',
-}
+  title: "",
+  companyName: "",
+  city: "",
+  state: "",
+  startDate: "",
+  endDate: "",
+  workSummery: "",
+};
 
 function Experience() {
-  const [experinceList, setExperinceList] = useState([])
-  const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext)
-  const params = useParams()
-  const [loading, setLoading] = useState(false)
+  const [experinceList, setExperinceList] = useState([]);
+  const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
+  const params = useParams();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (resumeInfo?.Experience && resumeInfo.Experience.length > 0) {
-      setExperinceList(resumeInfo.Experience)
+    if (
+      resumeInfo?.Experience &&
+      Array.isArray(resumeInfo.Experience) &&
+      resumeInfo.Experience.length > 0
+    ) {
+      setExperinceList(resumeInfo.Experience);
     }
-  }, [resumeInfo])
+  }, [resumeInfo]); // Fix the dependency array
 
-  const handleChange = (index, event) => {
-    const newEntries = experinceList.slice()
-    const { name, value } = event.target
-    newEntries[index][name] = value
-    console.log(newEntries)
-    setExperinceList(newEntries)
-  }
+  const handleChange = useCallback((index, event) => {
+    setExperinceList((prev) => {
+      const newEntries = [...prev];
+      newEntries[index] = {
+        ...newEntries[index],
+        [event.target.name]: event.target.value,
+      };
+      return newEntries;
+    });
+  }, []);
 
-  const AddNewExperience = () => {
-    setExperinceList([
-      ...experinceList,
-      {
-        title: '',
-        companyName: '',
-        city: '',
-        state: '',
-        startDate: '',
-        endDate: '',
-        workSummery: '',
-      },
-    ])
-  }
+  const AddNewExperience = useCallback(() => {
+    setExperinceList((prev) => [...prev, { ...formField }]);
+  }, []);
 
-  const RemoveExperience = () => {
-    setExperinceList((experinceList) => experinceList.slice(0, -1))
-  }
+  const RemoveExperience = useCallback(() => {
+    setExperinceList((prev) => prev.slice(0, -1));
+  }, []);
 
-  const handleRichTextEditor = (e, name, index) => {
-    const newEntries = experinceList.slice()
-    newEntries[index][name] = e.target.value
-    setExperinceList(newEntries)
-  }
-
-  // useEffect(() => {
-  //   setResumeInfo({
-  //     ...resumeInfo,
-  //     Experience: experinceList,
-  //   })
-  // }, [experinceList, resumeInfo, setResumeInfo])
+  const handleRichTextEditor = useCallback((e, name, index) => {
+    setExperinceList((prev) => {
+      const newEntries = [...prev];
+      newEntries[index] = { ...newEntries[index], [name]: e.target.value };
+      return newEntries;
+    });
+  }, []);
 
   useEffect(() => {
-    setResumeInfo((prev) => ({
-      ...prev,
-      Experience: experinceList,
-    }));
-  }, [experinceList]);
-  
+    setResumeInfo((prev) => {
+      if (JSON.stringify(prev.Experience) !== JSON.stringify(experinceList)) {
+        return { ...prev, Experience: experinceList };
+      }
+      return prev;
+    });
+  }, [experinceList, setResumeInfo]);
 
-  const onSave = () => {
-    setLoading(true)
-    const data = {
-      data: {
-        Experience: experinceList.map(({ id, ...rest }) => rest),
-      },
-    }
+  const onSave = useCallback(
+    async (e) => {
+      e.preventDefault();
 
-    console.log(experinceList)
+      if (loading) return; // Prevent multiple submissions
+      if (!resumeInfo?._id) {
+        toast.error("Missing resume ID. Please try again.");
+        console.error("Error: resumeId is undefined", resumeInfo);
+        return;
+      }
 
-   
-  }
+      setLoading(true);
+
+      const apiUrl = `http://localhost:8000/api/v1/resumes/update/${resumeInfo._id}`;
+
+      console.log("Updating resume at:", apiUrl, experinceList);
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ experinceList }), // Ensure correct data format
+          credentials: "include",
+        });
+
+        if (!response.ok) throw new Error("Failed to update resume");
+
+        toast.success("Experience updated successfully!");
+      } catch (error) {
+        toast.error(error.message || "Error saving experience.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [loading, resumeInfo?._id, experinceList]
+  );
 
   return (
     <div>
@@ -105,7 +120,7 @@ function Experience() {
                   <Input
                     name="title"
                     onChange={(event) => handleChange(index, event)}
-                    defaultValue={item?.title}
+                    value={item.title}
                   />
                 </div>
                 <div>
@@ -113,7 +128,7 @@ function Experience() {
                   <Input
                     name="companyName"
                     onChange={(event) => handleChange(index, event)}
-                    defaultValue={item?.companyName}
+                    value={item.companyName}
                   />
                 </div>
                 <div>
@@ -121,7 +136,7 @@ function Experience() {
                   <Input
                     name="city"
                     onChange={(event) => handleChange(index, event)}
-                    defaultValue={item?.city}
+                    value={item.city}
                   />
                 </div>
                 <div>
@@ -129,7 +144,7 @@ function Experience() {
                   <Input
                     name="state"
                     onChange={(event) => handleChange(index, event)}
-                    defaultValue={item?.state}
+                    value={item.state}
                   />
                 </div>
                 <div>
@@ -138,7 +153,7 @@ function Experience() {
                     type="date"
                     name="startDate"
                     onChange={(event) => handleChange(index, event)}
-                    defaultValue={item?.startDate}
+                    value={item.startDate}
                   />
                 </div>
                 <div>
@@ -147,16 +162,15 @@ function Experience() {
                     type="date"
                     name="endDate"
                     onChange={(event) => handleChange(index, event)}
-                    defaultValue={item?.endDate}
+                    value={item.endDate}
                   />
                 </div>
                 <div className="col-span-2">
-                  {/* Work Summery  */}
                   <RichTextEditor
                     index={index}
-                    defaultValue={item?.workSummery}
+                    defaultValue={item.workSummery}
                     onRichTextEditorChange={(event) =>
-                      handleRichTextEditor(event, 'workSummery', index)
+                      handleRichTextEditor(event, "workSummery", index)
                     }
                   />
                 </div>
@@ -171,7 +185,6 @@ function Experience() {
               onClick={AddNewExperience}
               className="text-primary"
             >
-              {' '}
               + Add More Experience
             </Button>
             <Button
@@ -179,17 +192,16 @@ function Experience() {
               onClick={RemoveExperience}
               className="text-primary"
             >
-              {' '}
               - Remove
             </Button>
           </div>
-          <Button disabled={loading} onClick={() => onSave()}>
-            {loading ? <LoaderCircle className="animate-spin" /> : 'Save'}
+          <Button disabled={loading} onClick={onSave}>
+            {loading ? <LoaderCircle className="animate-spin" /> : "Save"}
           </Button>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Experience
+export default Experience;

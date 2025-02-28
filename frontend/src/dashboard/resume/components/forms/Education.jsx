@@ -55,15 +55,55 @@ function Education() {
     setEducationalList((educationalList) => educationalList.slice(0, -1))
   }
 
-  const onSave = () => {
-    setLoading(true)
-    const data = {
-      data: {
-        education: educationalList.map(({ id, ...rest }) => rest)
-      }
+  const onSave = async () => { 
+    
+
+    if (loading) return; // Prevent multiple submissions
+    if (!resumeInfo?._id) {
+        toast.error("Missing resume ID. Please try again.");
+        console.error("Error: resumeId is undefined", resumeInfo);
+        return;
     }
 
-  }
+    setLoading(true);
+
+    const apiUrl = `http://localhost:8000/api/v1/resumes/update/${resumeInfo._id}`; 
+
+    const data = {
+        education: educationalList.map(({ id, ...rest }) => rest),
+    };
+
+    console.log("Updating resume at:", apiUrl, data);
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data), 
+            credentials: "include",
+        });
+
+        const responseData = await response.json();
+
+        if (!response.ok) {
+            throw new Error(responseData.error || "Failed to update education");
+        }
+
+        toast.success("Education updated successfully!");
+
+        // Update context state with saved data
+        setResumeInfo((prev) => ({
+            ...prev,
+            education: educationalList,
+        }));
+    } catch (error) {
+        console.error("Error updating education:", error);
+        toast.error(error.message || "Error saving education.");
+    } finally {
+        setLoading(false);
+    }
+};
+
 
   useEffect(() => {
     setResumeInfo((prev) => ({

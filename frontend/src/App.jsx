@@ -1,52 +1,61 @@
-import React, { Suspense, lazy } from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Layout from './components/shared/Layout';
-import ProtectedRoute from './components/admin/ProtectedRoute';
+import React, { Suspense, lazy } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Layout from "./components/shared/Layout";
+import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 // Lazy-loaded components
-const Home = lazy(() => import('./components/Home'));
-const Login = lazy(() => import('./components/auth/Login'));
-const Signup = lazy(() => import('./components/auth/Signup'));
-const Jobs = lazy(() => import('./components/Jobs'));
-const Browse = lazy(() => import('./components/Browse'));
-const Profile = lazy(() => import('./components/Profile'));
-const JobDescription = lazy(() => import('./components/JobDescription'));
-const Dashboard = lazy(() => import('./dashboard'));
-const EditResume = lazy(() => import('./dashboard/resume/[resumeId]/edit/index.jsx'));
-const ViewResume = lazy(() => import('./my-resume/[resumeId]/view/index.jsx'));
+const Home = lazy(() => import("./components/Home"));
+const Login = lazy(() => import("./components/auth/Login"));
+const Signup = lazy(() => import("./components/auth/Signup"));
+const Jobs = lazy(() => import("./components/Jobs"));
+const Browse = lazy(() => import("./components/Browse"));
+const Profile = lazy(() => import("./components/Profile"));
+const JobDescription = lazy(() => import("./components/JobDescription"));
+const Dashboard = lazy(() => import("./dashboard"));
+const EditResume = lazy(() =>
+  import("./dashboard/resume/[resumeId]/edit/index.jsx")
+);
+const ViewResume = lazy(() => import("./my-resume/[resumeId]/view/index.jsx"));
 
 // Admin routes
-const Companies = lazy(() => import('./components/admin/Companies'));
-const CompanyCreate = lazy(() => import('./components/admin/CompanyCreate'));
-const CompanySetup = lazy(() => import('./components/admin/CompanySetup'));
-const AdminJobs = lazy(() => import('./components/admin/AdminJobs'));
-const PostJob = lazy(() => import('./components/admin/PostJob'));
-const Applicants = lazy(() => import('./components/admin/Applicants'));
-const EditJob = lazy(() => import('./components/admin/EditJob'));
+const Companies = lazy(() => import("./components/admin/Companies"));
+const CompanyCreate = lazy(() => import("./components/admin/CompanyCreate"));
+const CompanySetup = lazy(() => import("./components/admin/CompanySetup"));
+const AdminJobs = lazy(() => import("./components/admin/AdminJobs"));
+const PostJob = lazy(() => import("./components/admin/PostJob"));
+const Applicants = lazy(() => import("./components/admin/Applicants"));
+const EditJob = lazy(() => import("./components/admin/EditJob"));
 
 //recruiter routes
-const SampleRecruiter = lazy(() => import('./components/recruiter/SampleRecruiter'));
+const RecruiterCompanies = lazy(() => import("./components/recruiter/RecruiterCompanies"));
+const RecruiterCompanyCreate = lazy(() => import("./components/recruiter/CompanyCreate"));
+// const RecruiterCompanySetup = lazy(() => import("./components/recruiter/CompanySetup"));
+const RecruiterJobs = lazy(() => import("./components/recruiter/AdminJobs"));
+const RecruiterEditJob = lazy(() => import("./components/recruiter/EditJob"));
+const RecruiterPostJob = lazy(() => import("./components/recruiter/PostJob"));
+const RecruiterApplicants = lazy(() => import("./components/recruiter/Applicants"));
+
 
 // Router Configuration
 const appRouter = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <Layout />,
     children: [
-      { path: '/', element: <Home /> },
-      { path: '/login', element: <Login /> },
-      { path: '/signup', element: <Signup /> },
-      { path: '/jobs', element: <Jobs /> },
-      { path: '/description/:id', element: <JobDescription /> },
-      { path: '/browse', element: <Browse /> },
-      { path: '/dashboard', element: <Dashboard /> },
-      { path: '/dashboard/resume/:resumeId/edit', element: <EditResume /> },
-      { path: '/my-resume/:resumeId/view', element: <ViewResume /> },
-      { path: '/profile', element: <Profile /> },
+      { path: "/", element: <Home /> },
+      { path: "/login", element: <Login /> },
+      { path: "/signup", element: <Signup /> },
+      { path: "/jobs", element: <Jobs /> },
+      { path: "/description/:id", element: <JobDescription /> },
+      { path: "/browse", element: <Browse /> },
+      { path: "/dashboard", element: <Dashboard /> },
+      { path: "/dashboard/resume/:resumeId/edit", element: <EditResume /> },
+      { path: "/my-resume/:resumeId/view", element: <ViewResume /> },
+      { path: "/profile", element: <Profile /> },
 
       // Admin routes
       {
-        path: '/admin/companies',
+        path: "/admin/companies",
         element: (
           <ProtectedRoute>
             <Companies />
@@ -54,7 +63,7 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: '/admin/companies/create',
+        path: "/admin/companies/create",
         element: (
           <ProtectedRoute>
             <CompanyCreate />
@@ -62,7 +71,7 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: '/admin/companies/:id',
+        path: "/admin/companies/:id",
         element: (
           <ProtectedRoute>
             <CompanySetup />
@@ -70,7 +79,7 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: '/admin/jobs',
+        path: "/admin/jobs",
         element: (
           <ProtectedRoute>
             <AdminJobs />
@@ -78,7 +87,7 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: '/admin/jobs/:id',
+        path: "/admin/jobs/:id",
         element: (
           <ProtectedRoute>
             <EditJob />
@@ -86,7 +95,7 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: '/admin/jobs/create',
+        path: "/admin/jobs/create",
         element: (
           <ProtectedRoute>
             <PostJob />
@@ -94,7 +103,7 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: '/admin/jobs/:id/applicants',
+        path: "/admin/jobs/:id/applicants",
         element: (
           <ProtectedRoute>
             <Applicants />
@@ -104,16 +113,61 @@ const appRouter = createBrowserRouter([
 
       // recruiter routes
       {
-        path: '/sample-recruiter',
+        path: "/sample-recruiter",
         element: (
           <ProtectedRoute>
-            <SampleRecruiter
-            />
-                      </ProtectedRoute>
+            <RecruiterCompanies />
+          </ProtectedRoute>
         ),
       },
-
-
+      {
+        path: "/sample-recruiter/create",
+        element: (
+          <ProtectedRoute>
+            <RecruiterCompanyCreate />
+          </ProtectedRoute>
+        ),
+      },
+      // {
+      //   path: "/sample-recruiter/:id",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <RecruiterCompanySetup />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      {
+        path: "/recruiterjobs",
+        element: (
+          <ProtectedRoute>
+            <RecruiterJobs />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/recruiterjobs/:id",
+        element: (
+          <ProtectedRoute>
+            <RecruiterEditJob />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/recruiterjobs/create",
+        element: (
+          <ProtectedRoute>
+            <RecruiterPostJob />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/recruiterjobs/:id/applicants",
+        element: (
+          <ProtectedRoute>
+            <RecruiterApplicants />
+          </ProtectedRoute>
+        ),
+      }
     ],
   },
 ]);

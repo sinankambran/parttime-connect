@@ -19,15 +19,6 @@ function Dashboard() {
    */
   const GetResumesList = () => {
     console.log(user);
-    // Uncomment and implement this logic to fetch resumes from the backend
-    // GlobalApi.GetUserResumes(user.email)
-    //   .then((resp) => {
-    //     console.log(resp.data.data);
-    //     setResumeList(resp.data.data);
-    //   })
-    //   .catch((error) => {
-    //     console.error('Error fetching resumes:', error);
-    //   });
   };
 
   return (
