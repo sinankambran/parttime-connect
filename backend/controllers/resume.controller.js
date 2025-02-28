@@ -70,6 +70,7 @@ export const updateResume = async (req, res) => {
   }
 };
 
+
 // Delete a resume
 export const deleteResume = async (req, res) => {
   const { id } = req.params;

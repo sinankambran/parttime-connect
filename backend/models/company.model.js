@@ -4,8 +4,8 @@ const companySchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
-      unique: true,
+       required: true,
+      //  unique: true,
     },
     description: {
       type: String,
@@ -17,7 +17,7 @@ const companySchema = new mongoose.Schema(
       type: String,
     },
     logo: {
-      type: String, // URL to company logo
+      type: String, 
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
