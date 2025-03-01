@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-// import Navbar from '../shared/Navbar'
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -18,8 +17,6 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Loader2 } from "lucide-react";
 
-const companyArray = [];
-
 const PostJob = () => {
   const [input, setInput] = useState({
     title: "",
@@ -32,23 +29,42 @@ const PostJob = () => {
     position: 0,
     companyId: "",
   });
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
   const { companies } = useSelector((store) => store.company);
+
   const changeEventHandler = (e) => {
-    setInput({ ...input, [e.target.name]: e.target.value });
+    setInput({ ...input, [e.target.name]: e.target.value.trimStart() });
   };
 
   const selectChangeHandler = (value) => {
     const selectedCompany = companies.find(
       (company) => company.name.toLowerCase() === value
     );
-    setInput({ ...input, companyId: selectedCompany._id });
+    if (selectedCompany) {
+      setInput({ ...input, companyId: selectedCompany._id });
+    }
   };
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    if (
+      !input.title ||
+      !input.description ||
+      !input.requirements ||
+      !input.salary ||
+      !input.location ||
+      !input.jobType ||
+      !input.experience ||
+      input.position <= 0 ||
+      !input.companyId
+    ) {
+      toast.error("Please fill all fields before submitting.");
+      return;
+    }
+
     try {
       setLoading(true);
       const res = await axios.post(`${JOB_API_END_POINT}/post`, input, {
@@ -57,12 +73,13 @@ const PostJob = () => {
         },
         withCredentials: true,
       });
+
       if (res.data.success) {
         toast.success(res.data.message);
         navigate("/recruiterjobs");
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Something went wrong.");
     } finally {
       setLoading(false);
     }
@@ -70,140 +87,82 @@ const PostJob = () => {
 
   return (
     <div>
-      {/* <Navbar /> */}
       <div className="flex items-center justify-center w-screen my-5">
         <form
           onSubmit={submitHandler}
           className="p-8 max-w-4xl border border-gray-200 shadow-lg rounded-md"
         >
           <div className="flex items-center gap-5 p-8">
-          <Button
-            type="button"
-            onClick={() => navigate("/recruiterjobs")}
-            variant="outline"
-            className="flex items-center gap-2 text-gray-500 font-semibold"
-          >
-            <ArrowLeft />
-            <span>Back</span>
-          </Button>
-          <h1 className="font-bold text-xl"> Post New Job</h1>
-        </div>
+            <Button
+              type="button"
+              onClick={() => navigate("/recruiterjobs")}
+              variant="outline"
+              className="flex items-center gap-2 text-gray-500 font-semibold"
+            >
+              <ArrowLeft />
+              <span>Back</span>
+            </Button>
+            <h1 className="font-bold text-xl">Post New Job</h1>
+          </div>
 
           <div className="grid grid-cols-2 gap-2">
-            <div>
-              <Label>Title</Label>
-              <Input
-                type="text"
-                name="title"
-                value={input.title}
-                onChange={changeEventHandler}
-                className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
-              />
-            </div>
-            <div>
-              <Label>Description</Label>
-              <Input
-                type="text"
-                name="description"
-                value={input.description}
-                onChange={changeEventHandler}
-                className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
-              />
-            </div>
-            <div>
-              <Label>Requirements</Label>
-              <Input
-                type="text"
-                name="requirements"
-                value={input.requirements}
-                onChange={changeEventHandler}
-                className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
-              />
-            </div>
-            <div>
-              <Label>Salary</Label>
-              <Input
-                type="text"
-                name="salary"
-                value={input.salary}
-                onChange={changeEventHandler}
-                className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
-              />
-            </div>
-            <div>
-              <Label>Location</Label>
-              <Input
-                type="text"
-                name="location"
-                value={input.location}
-                onChange={changeEventHandler}
-                className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
-              />
-            </div>
-            <div>
-              <Label>Job Type</Label>
-              <Input
-                type="text"
-                name="jobType"
-                value={input.jobType}
-                onChange={changeEventHandler}
-                className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
-              />
-            </div>
-            <div>
-              <Label>Experience Level</Label>
-              <Input
-                type="text"
-                name="experience"
-                value={input.experience}
-                onChange={changeEventHandler}
-                className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
-              />
-            </div>
-            <div>
-              <Label>No of Postion</Label>
-              <Input
-                type="number"
-                name="position"
-                value={input.position}
-                onChange={changeEventHandler}
-                className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
-              />
-            </div>
-            {companies.length > 0 && (
+            {[
+              { label: "Title", name: "title", type: "text" },
+              { label: "Description", name: "description", type: "text" },
+              { label: "Requirements", name: "requirements", type: "text" },
+              { label: "Salary", name: "salary", type: "text" },
+              { label: "Location", name: "location", type: "text" },
+              { label: "Job Type", name: "jobType", type: "text" },
+              { label: "Experience Level", name: "experience", type: "text" },
+              { label: "No of Positions", name: "position", type: "number" },
+            ].map(({ label, name, type }) => (
+              <div key={name}>
+                <Label>{label}</Label>
+                <Input
+                  type={type}
+                  name={name}
+                  value={input[name]}
+                  onChange={changeEventHandler}
+                  className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
+                />
+              </div>
+            ))}
+
+            {companies.length > 0 ? (
               <Select onValueChange={selectChangeHandler}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select a Company" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    {companies.map((company) => {
-                      return (
-                        <SelectItem value={company?.name?.toLowerCase()}>
-                          {company.name}
-                        </SelectItem>
-                      );
-                    })}
+                    {companies.map((company) => (
+                      <SelectItem
+                        key={company._id}
+                        value={company.name.toLowerCase()}
+                      >
+                        {company.name}
+                      </SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
+            ) : (
+              <p className="text-sm text-red-600 font-bold my-3 col-span-2 text-center">
+                *Please register a company before posting a job.
+              </p>
             )}
           </div>
-          {loading ? (
-            <Button className="w-full my-4">
-              {" "}
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait{" "}
-            </Button>
-          ) : (
-            <Button type="submit" className="w-full my-4">
-              Post New Job
-            </Button>
-          )}
-          {companies.length === 0 && (
-            <p className="text-xs text-red-600 font-bold text-center my-3">
-              *Please register a company first, before posting a jobs
-            </p>
-          )}
+
+          <Button type="submit" className="w-full my-4" disabled={loading}>
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Posting Job...
+              </>
+            ) : (
+              "Post New Job"
+            )}
+          </Button>
         </form>
       </div>
     </div>

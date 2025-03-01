@@ -1,42 +1,40 @@
-import { setAllJobs } from '@/redux/jobSlice';
-import { JOB_API_END_POINT } from '@/utils/constant';
-import axios from 'axios';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setJobs } from "@/redux/jobSlice";
+import { JOB_API_END_POINT } from "@/utils/constant";
+import axios from "axios";
 
 const useGetAllJobs = () => {
-    const dispatch = useDispatch();
-    const { searchedQuery } = useSelector(store => store.job);
-    const { user } = useSelector(store => store.auth);
+  const dispatch = useDispatch();
+  const { searchedQuery } = useSelector((store) => store.job);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchAllJobs = async () => {
-            if (!user?.token) {
-                console.log("No authentication token found.");
-                return;
-            }
+  const fetchAllJobs = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await axios.get(
+        `${JOB_API_END_POINT}/get?keyword=${searchedQuery}`,
+        { withCredentials: true }
+      );
+      if (res.data.success) {
+        dispatch(setJobs(res.data.jobs));
+        n;
+      }
+    } catch (err) {
+      setError(err.message || "Failed to fetch jobs");
+      console.error("Error fetching jobs:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [dispatch, searchedQuery]);
 
-            try {
-                const res = await axios.get(
-                    `${JOB_API_END_POINT}/get?keyword=${searchedQuery}`,
-                    {
-                        headers: {
-                            "Authorization": `Bearer ${user.token}`,
-                        },
-                        withCredentials: true,
-                    }
-                );
+  useEffect(() => {
+    fetchAllJobs();
+  }, [fetchAllJobs]);
 
-                if (res.data.success) {
-                    dispatch(setAllJobs(res.data.jobs));
-                }
-            } catch (error) {
-                console.log("API Error:", error.response?.data || error.message);
-            }
-        };
-
-        fetchAllJobs();
-    }, [searchedQuery, user?.token]);
+  return { loading, error, refetch: fetchAllJobs };
 };
 
 export default useGetAllJobs;

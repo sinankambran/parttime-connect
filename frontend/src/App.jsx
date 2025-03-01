@@ -29,9 +29,9 @@ const EditJob = lazy(() => import("./components/admin/EditJob"));
 //recruiter routes
 const RecruiterCompanies = lazy(() => import("./components/recruiter/RecruiterCompanies"));
 const RecruiterCompanyCreate = lazy(() => import("./components/recruiter/CompanyCreate"));
-// const RecruiterCompanySetup = lazy(() => import("./components/recruiter/CompanySetup"));
+const RecruiterCompanySetup = lazy(() => import("./components/recruiter/CompanySetup"));
 const RecruiterJobs = lazy(() => import("./components/recruiter/AdminJobs"));
-const RecruiterEditJob = lazy(() => import("./components/recruiter/EditJob"));
+// const RecruiterEditJob = lazy(() => import("./components/recruiter/EditJob"));
 const RecruiterPostJob = lazy(() => import("./components/recruiter/PostJob"));
 const RecruiterApplicants = lazy(() => import("./components/recruiter/Applicants"));
 
@@ -128,14 +128,14 @@ const appRouter = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      // {
-      //   path: "/sample-recruiter/:id",
-      //   element: (
-      //     <ProtectedRoute>
-      //       <RecruiterCompanySetup />
-      //     </ProtectedRoute>
-      //   ),
-      // },
+      {
+        path: "/sample-recruiter/:id",
+        element: (
+          <ProtectedRoute>
+            <RecruiterCompanySetup />
+          </ProtectedRoute>
+        ),
+      },
       {
         path: "/recruiterjobs",
         element: (
@@ -144,14 +144,14 @@ const appRouter = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      {
-        path: "/recruiterjobs/:id",
-        element: (
-          <ProtectedRoute>
-            <RecruiterEditJob />
-          </ProtectedRoute>
-        ),
-      },
+      // {
+      //   path: "/recruiterjobs/:id",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <RecruiterEditJob />
+      //     </ProtectedRoute>
+      //   ),
+      // },
       {
         path: "/recruiterjobs/create",
         element: (

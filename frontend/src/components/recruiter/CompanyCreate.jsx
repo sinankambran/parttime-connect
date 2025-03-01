@@ -1,193 +1,104 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "../ui/button";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import Navbar from "../shared/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { COMPANY_API_END_POINT } from "@/utils/constant";
-import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setSingleCompany } from "@/redux/companySlice";
-import useGetCompanyById from "@/hooks/useGetCompanyById";
+import useGetRecruiterCompanies from "@/hooks/useGetRecruiterCompanies";
 
 const CompanyCreate = () => {
   const navigate = useNavigate();
-  const params = useParams();
   const dispatch = useDispatch();
-  const { singleCompany = {} } = useSelector((store) => store.company);
-  const [loading, setLoading] = useState(false);
+  const [companyName, setCompanyName] = useState("");
 
-  useGetCompanyById(params.id); // Fetch company data when editing
+  const { companies, loading, error } = useGetRecruiterCompanies();
 
-  const [input, setInput] = useState({
-    name: "",
-    description: "",
-    website: "",
-    location: "",
-    file: null,
-  });
-
-  // Update input fields when singleCompany is available
   useEffect(() => {
-    if (params.id && singleCompany?.name) {
-      setInput({
-        name: singleCompany.name || "",
-        description: singleCompany.description || "",
-        website: singleCompany.website || "",
-        location: singleCompany.location || "",
-        file: null,
-      });
+    if (!loading && companies.length > 0) {
+      setTimeout(() => {
+        navigate(`/sample-recruiter/${companies[0]._id}`);
+      }, 500);
     }
-  }, [params.id, singleCompany]);
+  }, [loading, companies, navigate]);
 
-  const changeEventHandler = (e) => {
-    setInput({ ...input, [e.target.name]: e.target.value });
-  };
-
-  const changeFileHandler = (e) => {
-    const file = e.target.files?.[0];
-    setInput({ ...input, file });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (
-      !input.name.trim() ||
-      !input.description ||
-      !input.website ||
-      !input.location
-    ) {
-      toast.error("All fields are required.");
-      return;
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
     }
+  }, [error]);
 
-    setLoading(true);
-    const formData = new FormData();
-    formData.append("companyName", input.name);
-    formData.append("description", input.description);
-    formData.append("website", input.website);
-    formData.append("location", input.location);
-    if (input.file) formData.append("logo", input.file);
-
+  const registerNewCompany = async () => {
     try {
       const res = await axios.post(
         `${COMPANY_API_END_POINT}/register`,
-        formData,
+        { companyName },
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "application/json",
+          },
           withCredentials: true,
         }
       );
 
       if (res?.data?.success) {
-        const companyId = res.data.company._id;
-
-        // Fetch the newly created/updated company
-        const companyRes = await axios.get(
-          `${COMPANY_API_END_POINT}/get/${companyId}`,
-          {
-            withCredentials: true,
-          }
-        );
-
-        if (companyRes.data.success) {
-          dispatch(setSingleCompany(companyRes.data.company));
-        } else {
-          dispatch(setSingleCompany(null));
-          console.warn("Failed to fetch company:", companyRes.data.message);
-        }
-
+        dispatch(setSingleCompany(res.data.company));
         toast.success(res.data.message);
-        navigate(`/sample-recruiter/${companyId}`);
-      } else {
-        toast.error(res.data.message || "Failed to register company.");
+        navigate(`/sample-recruiter/${res.data.company._id}`);
       }
     } catch (error) {
-      console.error("Error registering company:", error);
-      toast.error(
-        error.response?.data?.message || "An error occurred. Please try again."
-      );
-    } finally {
-      setLoading(false);
+      console.error("Error creating company:", error);
+      toast.error("Failed to create company. Try again.");
     }
   };
 
-  return (
-    <div className="max-w-xl mx-auto my-10">
-      <form onSubmit={handleSubmit}>
-        <div className="flex items-center gap-5 p-8">
-          <Button
-            type="button"
-            onClick={() => navigate("/sample-recruiter")}
-            variant="outline"
-            className="flex items-center gap-2 text-gray-500 font-semibold"
-          >
-            <ArrowLeft />
-            <span>Back</span>
-          </Button>
-          <h1 className="font-bold text-xl">
-            {params.id ? "Edit Company" : "Register Company"}
-          </h1>
+  if (loading) {
+    return (
+      <div>
+        {/* <Navbar /> */}
+        <div className="max-w-4xl mx-auto p-4">
+          <p>Loading...</p>
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label>Company Name</Label>
-            <Input
-              type="text"
-              name="name"
-              value={input.name}
-              onChange={changeEventHandler}
-              required
-            />
-          </div>
-          <div>
-            <Label>Description</Label>
-            <Input
-              type="text"
-              name="description"
-              value={input.description}
-              onChange={changeEventHandler}
-              required
-            />
-          </div>
-          <div>
-            <Label>Website</Label>
-            <Input
-              type="text"
-              name="website"
-              value={input.website}
-              onChange={changeEventHandler}
-              required
-            />
-          </div>
-          <div>
-            <Label>Location</Label>
-            <Input
-              type="text"
-              name="location"
-              value={input.location}
-              onChange={changeEventHandler}
-              required
-            />
-          </div>
-          <div>
-            <Label>Logo</Label>
-            <Input type="file" accept="image/*" onChange={changeFileHandler} />
-          </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {/* <Navbar /> */}
+      <div className="max-w-4xl mx-auto p-4">
+        <div className="my-10">
+          <h1 className="font-bold text-2xl">Your Company Name</h1>
+          <p className="text-gray-500">
+            What would you like to name your company? You can change this later.
+          </p>
         </div>
 
-        {loading ? (
-          <Button className="w-full my-4">
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
+        <Label>Company Name</Label>
+        <Input
+          type="text"
+          className="my-2"
+          placeholder="JobHunt, Microsoft, etc."
+          value={companyName}
+          onChange={(e) => setCompanyName(e.target.value)}
+        />
+
+        <div className="flex items-center gap-2 my-10">
+          <Button
+            variant="outline"
+            onClick={() => navigate("/sample-recruiter")}
+          >
+            Cancel
           </Button>
-        ) : (
-          <Button type="submit" className="w-full my-4">
-            {params.id ? "Update Company" : "Register Company"}
+          <Button onClick={registerNewCompany} disabled={!companyName.trim()}>
+            Continue
           </Button>
-        )}
-      </form>
+        </div>
+      </div>
     </div>
   );
 };
