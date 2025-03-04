@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../shared/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -9,22 +8,22 @@ import { COMPANY_API_END_POINT } from "@/utils/constant";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { setSingleCompany } from "@/redux/companySlice";
-import useGetRecruiterCompanies from "@/hooks/useGetRecruiterCompanies";
+import useGetRecruiterCompany from "@/hooks/useGetRecruiterCompanies";
 
 const CompanyCreate = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [companyName, setCompanyName] = useState("");
 
-  const { companies, loading, error } = useGetRecruiterCompanies();
+  const { company, loading, error } = useGetRecruiterCompany();
 
   useEffect(() => {
-    if (!loading && companies.length > 0) {
+    if (!loading && company.length > 0) {
       setTimeout(() => {
-        navigate(`/sample-recruiter/${companies[0]._id}`);
+        navigate(`/sample-recruiter/${company[0]._id}`);
       }, 500);
     }
-  }, [loading, companies, navigate]);
+  }, [loading, company, navigate]);
 
   useEffect(() => {
     if (error) {

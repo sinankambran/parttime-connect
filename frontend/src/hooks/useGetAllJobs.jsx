@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setJobs } from "@/redux/jobSlice";
+import { setAllJobs } from "@/redux/jobSlice";
 import { JOB_API_END_POINT } from "@/utils/constant";
 import axios from "axios";
 
@@ -19,8 +19,8 @@ const useGetAllJobs = () => {
         { withCredentials: true }
       );
       if (res.data.success) {
-        dispatch(setJobs(res.data.jobs));
-        n;
+        dispatch(setAllJobs(res.data.jobs));
+      
       }
     } catch (err) {
       setError(err.message || "Failed to fetch jobs");

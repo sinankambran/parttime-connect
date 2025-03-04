@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-// import Navbar from "./shared/Navbar";
 import Job from "./Job";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchedQuery } from "@/redux/jobSlice";
@@ -18,7 +17,6 @@ const Browse = () => {
 
   return (
     <div>
-      {/* <Navbar /> */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-10">
         <h1 className="font-bold text-2xl sm:text-3xl text-center sm:text-left my-6">
           Search Results ({allJobs.length})

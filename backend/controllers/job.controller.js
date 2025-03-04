@@ -206,26 +206,29 @@ export const updateJob = async (req, res) => {
 
 export const getRecruiterJobs = async (req, res) => {
   try {
-    const userId = req.user?.id;
-    if (!userId) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized access", success: false });
+    const adminId = req.id;
+    // Fetch all jobs from the database
+    const jobs = await Job.find({created_by: adminId }).populate({
+      path: "company",
+      options: { sort: { createdAt: -1 } }, // Sort company data by createdAt in descending order
+    });
+
+    if (!jobs || jobs.length === 0) {
+      return res.status(404).json({
+        message: "No jobs found.",
+        success: false,
+      });
     }
 
-    console.log(`Fetching jobs for recruiter: ${userId}`);
-
-    const companies = await Company.find({ userId }).select("_id");
-    const companyIds = companies.map((company) => company._id);
-
-    const jobs = await Job.find({ companyId: { $in: companyIds } });
-
-    return res.status(200).json({ jobs, success: true });
+    return res.status(200).json({
+      jobs,
+      success: true,
+    });
   } catch (error) {
-    console.error("Error fetching recruiter jobs:", error);
+    console.log(error);
     return res.status(500).json({
       message: "An error occurred while fetching jobs.",
       success: false,
     });
   }
-};
+}

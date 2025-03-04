@@ -2,7 +2,7 @@ import React, { Suspense, lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./components/shared/Layout";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
-
+import { Toaster } from "sonner";
 // Lazy-loaded components
 const Home = lazy(() => import("./components/Home"));
 const Login = lazy(() => import("./components/auth/Login"));
@@ -31,7 +31,7 @@ const RecruiterCompanies = lazy(() => import("./components/recruiter/RecruiterCo
 const RecruiterCompanyCreate = lazy(() => import("./components/recruiter/CompanyCreate"));
 const RecruiterCompanySetup = lazy(() => import("./components/recruiter/CompanySetup"));
 const RecruiterJobs = lazy(() => import("./components/recruiter/AdminJobs"));
-// const RecruiterEditJob = lazy(() => import("./components/recruiter/EditJob"));
+const RecruiterEditJob = lazy(() => import("./components/recruiter/EditJob"));
 const RecruiterPostJob = lazy(() => import("./components/recruiter/PostJob"));
 const RecruiterApplicants = lazy(() => import("./components/recruiter/Applicants"));
 
@@ -144,14 +144,14 @@ const appRouter = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      // {
-      //   path: "/recruiterjobs/:id",
-      //   element: (
-      //     <ProtectedRoute>
-      //       <RecruiterEditJob />
-      //     </ProtectedRoute>
-      //   ),
-      // },
+      {
+        path: "/recruiterjobs/:id",
+        element: (
+          <ProtectedRoute>
+            <RecruiterEditJob />
+          </ProtectedRoute>
+        ),
+      },
       {
         path: "/recruiterjobs/create",
         element: (
@@ -176,6 +176,7 @@ const appRouter = createBrowserRouter([
 const Router = () => (
   <Suspense fallback={<div className="text-center p-5">Loading...</div>}>
     <RouterProvider router={appRouter} />
+    <Toaster position="top-right" richColors /> 
   </Suspense>
 );
 
