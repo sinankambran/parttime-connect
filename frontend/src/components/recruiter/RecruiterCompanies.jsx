@@ -17,15 +17,15 @@ const Company = () => {
     <div>
       {/* <Navbar /> */}
       <div className="max-w-6xl mx-auto my-10">
-        <div className="flex items-center justify-between my-5">
+        <div className="flex items-center justify-between my-5 ">
           <Input
-            className="w-fit"
+            className="w-full sm:w-fit"
             placeholder="Filter by name"
             onChange={(e) => setInput(e.target.value)}
           />
           {!company && (
-            <Button onClick={() => navigate("/sample-recruiter/create")}>
-              New Company
+            <Button className="flex flex-col items-center gap-4 my-5" onClick={() => navigate("/sample-recruiter/create")}>
+              Register Company
             </Button>
           )}
         </div>

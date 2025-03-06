@@ -38,15 +38,6 @@ const PostJob = () => {
     setInput({ ...input, [e.target.name]: e.target.value.trimStart() });
   };
 
-  const selectChangeHandler = (value) => {
-    const selectedCompany = companies.find(
-      (company) => company.name.toLowerCase() === value
-    );
-    if (selectedCompany) {
-      setInput({ ...input, companyId: selectedCompany._id });
-    }
-  };
-
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -58,8 +49,7 @@ const PostJob = () => {
       !input.location ||
       !input.jobType ||
       !input.experience ||
-      input.position <= 0 ||
-      !input.companyId
+      input.position <= 0
     ) {
       toast.error("Please fill all fields before submitting.");
       return;
@@ -127,30 +117,6 @@ const PostJob = () => {
                 />
               </div>
             ))}
-
-            {companies.length > 0 ? (
-              <Select onValueChange={selectChangeHandler}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select a Company" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {companies.map((company) => (
-                      <SelectItem
-                        key={company._id}
-                        value={company.name.toLowerCase()}
-                      >
-                        {company.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            ) : (
-              <p className="text-sm text-red-600 font-bold my-3 col-span-2 text-center">
-                *Please register a company before posting a job.
-              </p>
-            )}
           </div>
 
           <Button type="submit" className="w-full my-4" disabled={loading}>

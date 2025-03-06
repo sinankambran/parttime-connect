@@ -1,3 +1,4 @@
+import { Company } from "../models/company.model.js";
 import { Job } from "../models/job.model.js";
 
 export const postJob = async (req, res) => {
@@ -23,14 +24,15 @@ export const postJob = async (req, res) => {
       !location ||
       !jobType ||
       !experience ||
-      !position ||
-      !companyId
+      !position
     ) {
       return res.status(400).json({
         message: "Somethin is missing.",
         success: false,
       });
     }
+    const companies = await Company.find({ userId });
+    console.log(companies[0]);
     const job = await Job.create({
       title,
       description,
@@ -40,7 +42,7 @@ export const postJob = async (req, res) => {
       jobType,
       experienceLevel: experience,
       position,
-      company: companyId,
+      company: companies[0]._id,
       created_by: userId,
     });
     return res.status(201).json({
@@ -208,7 +210,7 @@ export const getRecruiterJobs = async (req, res) => {
   try {
     const adminId = req.id;
     // Fetch all jobs from the database
-    const jobs = await Job.find({created_by: adminId }).populate({
+    const jobs = await Job.find({ created_by: adminId }).populate({
       path: "company",
       options: { sort: { createdAt: -1 } }, // Sort company data by createdAt in descending order
     });
@@ -231,4 +233,4 @@ export const getRecruiterJobs = async (req, res) => {
       success: false,
     });
   }
-}
+};
