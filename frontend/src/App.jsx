@@ -24,7 +24,8 @@ const CompanySetup = lazy(() => import("./components/admin/CompanySetup"));
 const AdminJobs = lazy(() => import("./components/admin/AdminJobs"));
 const PostJob = lazy(() => import("./components/admin/PostJob"));
 const Applicants = lazy(() => import("./components/admin/Applicants"));
-const EditJob = lazy(() => import("./components/admin/EditJob"));
+const EditJob = lazy(() => import("@/components/admin/EditJob"));
+
 
 //recruiter routes
 const RecruiterCompanies = lazy(() => import("./components/recruiter/RecruiterCompanies"));
