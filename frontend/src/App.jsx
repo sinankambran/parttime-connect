@@ -31,7 +31,7 @@ const RecruiterCompanies = lazy(() => import("./components/recruiter/RecruiterCo
 const RecruiterCompanyCreate = lazy(() => import("./components/recruiter/CompanyCreate"));
 const RecruiterCompanySetup = lazy(() => import("./components/recruiter/CompanySetup"));
 const RecruiterJobs = lazy(() => import("./components/recruiter/AdminJobs"));
-const RecruiterEditJob = lazy(() => import("./components/recruiter/editJob"));
+const RecruiterEditJob = lazy(() => import("./components/recruiter/EditJob"));
 const RecruiterPostJob = lazy(() => import("./components/recruiter/PostJob"));
 const RecruiterApplicants = lazy(() => import("./components/recruiter/Applicants"));
 
