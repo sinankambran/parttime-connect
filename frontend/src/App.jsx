@@ -22,7 +22,7 @@ const CompanySetup = lazy(() => import("./components/admin/CompanySetup"));
 const AdminJobs = lazy(() => import("./components/admin/AdminJobs"));
 const PostJob = lazy(() => import("./components/admin/PostJob"));
 const Applicants = lazy(() => import("./components/admin/Applicants"));
-const EditJob = lazy(() => import("@/components/admin/EditJob"));
+const EditJob = lazy(() => import("./components/admin/Editjob"));
 
 
 //recruiter routes
@@ -30,7 +30,7 @@ const RecruiterCompanies = lazy(() => import("./components/recruiter/RecruiterCo
 const RecruiterCompanyCreate = lazy(() => import("./components/recruiter/CompanyCreate"));
 const RecruiterCompanySetup = lazy(() => import("./components/recruiter/CompanySetup"));
 const RecruiterJobs = lazy(() => import("./components/recruiter/AdminJobs"));
-const RecruiterEditJob = lazy(() => import("@/components/recruiter/editJob"));
+const RecruiterEditJob = lazy(() => import("./components/recruiter/editJob"));
 const RecruiterPostJob = lazy(() => import("./components/recruiter/PostJob"));
 const RecruiterApplicants = lazy(() => import("./components/recruiter/Applicants"));
 
