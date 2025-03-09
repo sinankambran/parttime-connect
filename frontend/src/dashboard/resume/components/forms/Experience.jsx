@@ -73,7 +73,7 @@ function Experience() {
     async (e) => {
       e.preventDefault();
 
-      if (loading) return; // Prevent multiple submissions
+      if (loading) return;
       if (!resumeInfo?._id) {
         toast.error("Missing resume ID. Please try again.");
         console.error("Error: resumeId is undefined", resumeInfo);
@@ -82,7 +82,7 @@ function Experience() {
 
       setLoading(true);
 
-      const apiUrl = `http://localhost:8000/api/v1/resumes/update/${resumeInfo._id}`;
+      const apiUrl = `https://parttime-connect-pkkk.vercel.app/api/v1/resumes/update/${resumeInfo._id}`;
 
       console.log("Updating resume at:", apiUrl, experinceList);
 
@@ -90,7 +90,7 @@ function Experience() {
         const response = await fetch(apiUrl, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ experinceList }), // Ensure correct data format
+          body: JSON.stringify({ experinceList }), 
           credentials: "include",
         });
 
