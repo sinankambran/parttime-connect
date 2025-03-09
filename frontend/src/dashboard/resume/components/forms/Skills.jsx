@@ -49,7 +49,7 @@ function Skills() {
     }
 
     const onSave = async () => {
-        if (loading) return; // Prevent multiple submissions
+        if (loading) return; 
         setLoading(true);
       
         if (!resumeInfo?._id) {
