@@ -19,9 +19,6 @@ const CompanyCreate = () => {
 
   useEffect(() => {
     if (!loading && company.length > 0) {
-      setTimeout(() => {
-        navigate(`/sample-recruiter/${company[0]._id}`);
-      }, 500);
     }
   }, [loading, company, navigate]);
 
