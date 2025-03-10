@@ -44,7 +44,7 @@ function PersonalDetail({ onNextStep }) {
     setLoading(true);
     console.log(resumeInfo)
     
-    const apiUrl = `${import.meta.env.VITE_BASE_URL}/api/v1/resumes/update/${resumeInfo._id}`;
+    const apiUrl = (`${import.meta.env.VITE_BASE_URL}/api/v1/resumes/update/${resumeInfo._id}`);
     console.log("Sending update request to:", apiUrl, formData);
  
     try {
