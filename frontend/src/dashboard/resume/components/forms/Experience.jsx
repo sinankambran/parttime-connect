@@ -82,7 +82,7 @@ function Experience() {
 
       setLoading(true);
 
-      const apiUrl = `https://parttime-connect-pkkk.vercel.app/api/v1/resumes/update/${resumeInfo._id}`;
+      const apiUrl = `http://localhost:8000/api/v1/resumes/update/${resumeInfo._id}`;
 
       console.log("Updating resume at:", apiUrl, experinceList);
 

@@ -63,7 +63,7 @@ function Skills() {
         console.log(data);
       
         try {
-          const response = await fetch(`https://parttime-connect-pkkk.vercel.app/api/v1/resumes/update/${resumeInfo._id}`, {
+          const response = await fetch(`http://localhost:8000/api/v1/resumes/update/${resumeInfo._id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),

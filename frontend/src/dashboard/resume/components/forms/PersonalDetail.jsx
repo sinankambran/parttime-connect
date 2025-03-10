@@ -44,7 +44,7 @@ function PersonalDetail({ onNextStep }) {
     setLoading(true);
     console.log(resumeInfo)
     
-    const apiUrl = `https://parttime-connect-pkkk.vercel.app/api/v1/resumes/update/${resumeInfo._id}`;
+    const apiUrl = `http://localhost:8000/api/v1/resumes/update/${resumeInfo._id}`;
     console.log("Sending update request to:", apiUrl, formData);
  
     try {
