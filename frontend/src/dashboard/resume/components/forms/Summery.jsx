@@ -67,7 +67,7 @@ function Summery({ enabledNext }) {
   
     setLoading(true);
   
-    const apiUrl = `http://localhost:8000/api/v1/resumes/update/${resumeInfo._id}`;
+    const apiUrl = `${import.meta.env.VITE_BASE_URL}/api/v1/resumes/update/${resumeInfo._id}`;
   
     console.log("Updating resume at:", apiUrl, summery);
   
