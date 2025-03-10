@@ -11,8 +11,8 @@ import {
 import { Badge } from "./ui/badge";
 import { useSelector } from "react-redux";
 
-const  AppliedJobTable = () => {
-  const { allAppliedJobs } = useSelector((store) => store.job);
+const AppliedJobTable = () => {
+  const { allAppliedJobs = [] } = useSelector((store) => store.job);
 
   return (
     <div className="overflow-x-auto">
@@ -27,7 +27,7 @@ const  AppliedJobTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {allAppliedJobs.length <= 0 ? (
+          {allAppliedJobs.length === 0 ? (
             <tr>
               <td colSpan={4} className="text-center p-4">
                 You haven't applied for any jobs yet.
