@@ -22,11 +22,11 @@ const CompanyCreate = () => {
     }
   }, [loading, company, navigate]);
 
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-    }
-  }, [error]);
+  // useEffect(() => {
+  //   if (error) {
+  //     toast.error(error);
+  //   }
+  // }, [error]);
 
   const registerNewCompany = async () => {
     try {
