@@ -17,8 +17,15 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+const allowedOrigins = [
+  "http://localhost:5173", 
+  "https://parttime-connect.vercel.app" // Add your deployed frontend URL
+];
+
+
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: allowedOrigins,
   credentials: true,
 };
 
