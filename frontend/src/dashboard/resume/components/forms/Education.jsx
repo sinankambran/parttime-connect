@@ -67,7 +67,7 @@ function Education() {
 
     setLoading(true);
 
-    const apiUrl = (`${import.meta.env.VITE_BASE_URL}/api/v1/resumes/update/${resumeInfo._id}`); 
+    const apiUrl = (`${import.meta.env.VITE_API_BASE_URL}/api/v1/resumes/update/${resumeInfo._id}`); 
 
     const data = {
         education: educationalList.map(({ id, ...rest }) => rest),

@@ -63,7 +63,7 @@ function Skills() {
         console.log(data);
       
         try {
-          const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/resumes/update/${resumeInfo._id}`, {
+          const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/resumes/update/${resumeInfo._id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
