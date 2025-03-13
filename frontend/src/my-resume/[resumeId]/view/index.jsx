@@ -1,22 +1,29 @@
 import { Button } from "@/components/ui/button";
 import { ResumeInfoContext } from "@/context/ResumeInfoContext";
 import ResumePreview from "@/dashboard/resume/components/ResumePreview";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { RWebShare } from "react-web-share";
 
 function ViewResume() {
-  const [resumeInfo, setResumeInfo] = useState(null);
+  const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
   const { resumeId } = useParams();
+
+  console.log({ resumeInfo });
+
 
   // Fetch resume data
   useEffect(() => {
     const fetchResume = async () => {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/v1/resumes/${resumeId}`
+          `${import.meta.env.VITE_API_BASE_URL}/api/v1/resumes/get/${resumeId}`, {
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        }
         );
         const data = await response.json();
+        console.log(data);
         setResumeInfo(data);
       } catch (error) {
         console.error("Error fetching resume:", error);
@@ -33,7 +40,7 @@ function ViewResume() {
   };
 
   return (
-    <ResumeInfoContext.Provider value={{ resumeInfo, setResumeInfo }}>
+    <div>
       <div id="no-print">
         <div className="my-10 mx-10 md:mx-20 lg:mx-36">
           <h2 className="text-center text-2xl font-medium">
@@ -66,7 +73,7 @@ function ViewResume() {
           <ResumePreview />
         </div>
       </div>
-    </ResumeInfoContext.Provider>
+    </div>
   );
 }
 

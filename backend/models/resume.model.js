@@ -1,5 +1,29 @@
 import mongoose from "mongoose";
 
+const Experience = new mongoose.Schema({
+  title: { type: String },
+  companyName: { type: String },
+  city: { type: String },
+  state: { type: String },
+  startDate: { type: String },
+  endDate: { type: String },
+  workSummery: { type: String },
+})
+
+const Education = new mongoose.Schema({
+  universityName: { type: String },
+  degree: { type: String },
+  major: { type: String },
+  startDate: { type: String },
+  endDate: { type: String },
+  description: { type: String },
+})
+
+const Skills = new mongoose.Schema({
+  name: { type: String },
+  rating: { type: String },
+})
+
 const ResumeSchema = new mongoose.Schema(
   {
     title: { type: String },
@@ -13,21 +37,9 @@ const ResumeSchema = new mongoose.Schema(
     jobTitle: { type: String },
     phone: { type: String },
     summery: { type: String },
-    title: { type: String },
-    companyName: { type: String },
-    city: { type: String },
-    state: { type: String },
-    startDate: { type: String },
-    endDate: { type: String },
-    workSummery: { type: String },
-    universityName: { type: String },
-    degree: { type: String },
-    major: { type: String },
-    startDate: { type: String },
-    endDate: { type: String },
-    description: { type: String },
-    name: { type: String },
-    rating: { type: String },
+    experienceList: [Experience],
+    educationList: [Education],
+    skillsList: [Skills]
   },
   { timestamps: true } // Automatically add createdAt and updatedAt fields
 );

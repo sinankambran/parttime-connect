@@ -10,15 +10,11 @@ const API_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent";
 const API_KEY = import.meta.env.VITE_GOOGLE_AI_API_KEY; // Use environment variable
 
-const promptTemplate =
-  "Job Title: {jobTitle}, Based on the job title, provide a list of summary options for two experience levels: Mid Level and Fresher. Format in JSON array with 'summary' and 'experience_level'.";
 
 function Summery({ enabledNext }) {
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
   const [summery, setSummery] = useState(resumeInfo?.summery || "");
   const [loading, setLoading] = useState(false);
-  const [aiGeneratedSummeryList, setAiGeneratedSummeryList] = useState([]);
-  const { resumeId } = useParams();
 
   useEffect(() => {
     setResumeInfo((prev) => ({ ...prev, summery }));
@@ -27,6 +23,19 @@ function Summery({ enabledNext }) {
   const generateSummeryFromAI = async () => {
     try {
       setLoading(true);
+      const promptObj = {...resumeInfo};
+      delete promptObj.summery;
+      delete promptObj.id;
+
+      const promptTemplate =
+  `Job Title: {jobTitle}, Based on the job title and the information provided below, provide a summary this candidate. Information candidate provided so far as \`JSON.stringify\`: ${JSON.stringify(promptObj)}
+  
+  Also follow the below instructions:
+  1. Should be pure text as a paragraph, not a markdown style.
+  2. Should be first person.
+  3. 300 words.`;
+  console.log(promptTemplate);
+  
       const PROMPT = promptTemplate.replace(
         "{jobTitle}",
         resumeInfo?.jobTitle || "N/A"
@@ -39,14 +48,17 @@ function Summery({ enabledNext }) {
           contents: [{ role: "user", parts: [{ text: PROMPT }] }],
         }),
       });
+     
 
       if (!response.ok) throw new Error("API request failed");
 
       const data = await response.json();
       const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
-      const parsedResult = JSON.parse(rawText);
+      // const parsedResult = JSON.parse(rawText);
+      console.log({rawText});
+      
 
-      setAiGeneratedSummeryList(parsedResult);
+      setSummery(rawText);
     } catch (error) {
       console.error("Error generating summary:", error);
       toast.error("Failed to generate AI summary.");
@@ -75,7 +87,7 @@ function Summery({ enabledNext }) {
       const response = await fetch(apiUrl, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ summery }), // Ensure correct data format
+        body: JSON.stringify({ summery: summery }), // Ensure correct data format
         credentials: "include",
       });
   
@@ -135,24 +147,16 @@ function Summery({ enabledNext }) {
           </div>
         </form>
       </div>
-
-      {aiGeneratedSummeryList.length > 0 && (
+{/* 
+      {summery && (
         <div className="my-5">
-          <h2 className="font-bold text-lg">Suggestions</h2>
-          {aiGeneratedSummeryList.map((item, index) => (
-            <div
-              key={index}
-              onClick={() => setSummery(item.summary)}
-              className="p-5 shadow-lg my-4 rounded-lg cursor-pointer hover:bg-gray-100 transition"
-            >
-              <h2 className="font-bold my-1 text-primary">
-                Level: {item.experience_level}
-              </h2>
-              <p>{item.summary}</p>
-            </div>
-          ))}
+          <div
+            className="p-5 shadow-lg my-4 rounded-lg cursor-pointer hover:bg-gray-100 transition"
+          >
+            <p>{summery}</p>
+          </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

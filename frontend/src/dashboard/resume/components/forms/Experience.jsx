@@ -18,7 +18,7 @@ const formField = {
 };
 
 function Experience() {
-  const [experinceList, setExperinceList] = useState([]);
+  const [experienceList, setexperienceList] = useState([]);
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
   const params = useParams();
   const [loading, setLoading] = useState(false);
@@ -29,12 +29,12 @@ function Experience() {
       Array.isArray(resumeInfo.Experience) &&
       resumeInfo.Experience.length > 0
     ) {
-      setExperinceList(resumeInfo.Experience);
+      setexperienceList(resumeInfo.Experience);
     }
   }, [resumeInfo]); // Fix the dependency array
 
   const handleChange = useCallback((index, event) => {
-    setExperinceList((prev) => {
+    setexperienceList((prev) => {
       const newEntries = [...prev];
       newEntries[index] = {
         ...newEntries[index],
@@ -45,15 +45,15 @@ function Experience() {
   }, []);
 
   const AddNewExperience = useCallback(() => {
-    setExperinceList((prev) => [...prev, { ...formField }]);
+    setexperienceList((prev) => [...prev, { ...formField }]);
   }, []);
 
   const RemoveExperience = useCallback(() => {
-    setExperinceList((prev) => prev.slice(0, -1));
+    setexperienceList((prev) => prev.slice(0, -1));
   }, []);
 
   const handleRichTextEditor = useCallback((e, name, index) => {
-    setExperinceList((prev) => {
+    setexperienceList((prev) => {
       const newEntries = [...prev];
       newEntries[index] = { ...newEntries[index], [name]: e.target.value };
       return newEntries;
@@ -62,16 +62,17 @@ function Experience() {
 
   useEffect(() => {
     setResumeInfo((prev) => {
-      if (JSON.stringify(prev.Experience) !== JSON.stringify(experinceList)) {
-        return { ...prev, Experience: experinceList };
+      if (JSON.stringify(prev.Experience) !== JSON.stringify(experienceList)) {
+        return { ...prev, Experience: experienceList };
       }
       return prev;
     });
-  }, [experinceList, setResumeInfo]);
+  }, [experienceList, setResumeInfo]);
 
   const onSave = useCallback(
     async (e) => {
       e.preventDefault();
+      
 
       if (loading) return;
       if (!resumeInfo?._id) {
@@ -83,16 +84,17 @@ function Experience() {
       setLoading(true);
 
       const apiUrl =(`${import.meta.env.VITE_API_BASE_URL}/api/v1/resumes/update/${resumeInfo._id}`);
-
-      console.log("Updating resume at:", apiUrl, experinceList);
+      console.log("Updating resume at:", apiUrl, experienceList);
 
       try {
         const response = await fetch(apiUrl, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ experinceList }), 
+          body: JSON.stringify({ experienceList }), 
           credentials: "include",
         });
+        setResumeInfo(await response.json());
+        
 
         if (!response.ok) throw new Error("Failed to update resume");
 
@@ -103,7 +105,7 @@ function Experience() {
         setLoading(false);
       }
     },
-    [loading, resumeInfo?._id, experinceList]
+    [loading, resumeInfo?._id, experienceList, setResumeInfo]
   );
 
   return (
@@ -112,7 +114,7 @@ function Experience() {
         <h2 className="font-bold text-lg">Professional Experience</h2>
         <p>Add Your previous Job experience</p>
         <div>
-          {experinceList.map((item, index) => (
+          {experienceList.map((item, index) => (
             <div key={index}>
               <div className="grid grid-cols-2 gap-3 border p-3 my-5 rounded-lg">
                 <div>

@@ -70,7 +70,7 @@ function Education() {
     const apiUrl = (`${import.meta.env.VITE_API_BASE_URL}/api/v1/resumes/update/${resumeInfo._id}`); 
 
     const data = {
-        education: educationalList.map(({ id, ...rest }) => rest),
+      educationList: educationalList.map(({ id, ...rest }) => rest),
     };
 
     console.log("Updating resume at:", apiUrl, data);

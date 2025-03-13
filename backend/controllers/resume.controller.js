@@ -57,9 +57,9 @@ export const updateResume = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const updatedResume = await Resume.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const updatedResume = await Resume.findByIdAndUpdate(id, req.body);
+    console.log(req.body);
+    
     if (!updatedResume) {
       return res.status(404).json({ error: "Resume not found" });
     }

@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./components/shared/Layout";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 import { Toaster } from "sonner";
+import { ResumeInfoProvider } from "./context/ResumeInfoContext";
 // Lazy-loaded components
 const Home = lazy(() => import("./components/Home"));
 const Login = lazy(() => import("./components/auth/Login"));
@@ -50,7 +51,12 @@ const appRouter = createBrowserRouter([
       { path: "/browse", element: <Browse /> },
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/dashboard/resume/:resumeId/edit", element: <EditResume /> },
-      { path: "/my-resume/:resumeId/view", element: <ViewResume /> },
+      {
+        path: "/my-resume/:resumeId/view", element:
+          <ResumeInfoProvider>
+            <ViewResume />
+          </ResumeInfoProvider>
+      },
       { path: "/profile", element: <Profile /> },
 
       // Admin routes
@@ -176,7 +182,7 @@ const appRouter = createBrowserRouter([
 const Router = () => (
   <Suspense fallback={<div className="text-center p-5">Loading...</div>}>
     <RouterProvider router={appRouter} />
-    <Toaster position="top-right" richColors /> 
+    <Toaster position="top-right" richColors />
   </Suspense>
 );
 

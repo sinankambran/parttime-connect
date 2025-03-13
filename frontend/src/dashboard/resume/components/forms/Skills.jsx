@@ -58,7 +58,7 @@ function Skills() {
         }
       
         const data = {
-          skills: skillsList.map(({ id, ...rest }) => rest),
+            skillsList: skillsList.map(({ id, ...rest }) => rest),
         };
         console.log(data);
       

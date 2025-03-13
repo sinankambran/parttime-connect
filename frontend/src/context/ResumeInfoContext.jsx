@@ -4,10 +4,10 @@
 
 import React, { createContext, useState } from 'react';
 
-export const ResumeInfoContext = createContext();
+export const ResumeInfoContext = createContext({});
 
 export const ResumeInfoProvider = ({ children }) => {
-  const [resumeInfo, setResumeInfo] = useState({});
+  const [resumeInfo, setResumeInfo] = useState();
 
   return (
     <ResumeInfoContext.Provider value={{ resumeInfo, setResumeInfo }}>
