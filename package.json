@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@huggingface/transformers": "^3.4.0",
+    "faiss-node": "^0.5.1"
+  }
+}
