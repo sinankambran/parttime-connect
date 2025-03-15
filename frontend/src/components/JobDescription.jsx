@@ -7,7 +7,7 @@ import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from "@/utils/constant";
 import { setSingleJob } from "@/redux/jobSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-// import Navbar from "./shared/Navbar";
+import { Briefcase, MapPin, DollarSign, Calendar, Users } from "lucide-react"; 
 
 const JobDescription = () => {
   const { singleJob } = useSelector((store) => store.job);
@@ -39,7 +39,6 @@ const JobDescription = () => {
         toast.success(res.data.message);
       }
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data.message);
     }
   };
@@ -59,92 +58,100 @@ const JobDescription = () => {
           );
         }
       } catch (error) {
-        console.log(error);
+        toast.error("Failed to load job details.");
       }
     };
     fetchSingleJob();
   }, [jobId, dispatch, user?._id]);
 
   return (
-    <div>
-      {/* <Navbar /> */}
+    <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-xl rounded-lg">
+      <div className="flex flex-col sm:flex-row justify-between items-center">
+        <h1 className="text-3xl font-bold text-gray-800">
+          {singleJob?.title || "Job Title"}
+        </h1>
+        <Button
+          onClick={isApplied ? null : applyJobHandler}
+          disabled={isApplied}
+          className={`mt-4 sm:mt-0 px-6 py-2 rounded-lg text-white font-medium transition ${
+            isApplied
+              ? "bg-gray-500 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
+          }`}
+        >
+          {isApplied ? "Already Applied" : "Apply Now"}
+        </Button>
+      </div>
 
-      <hr />
-      <div className="max-w-7xl mx-auto my-10 px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="font-bold text-2xl text-gray-800">{singleJob?.title}</h1>
-            <div className="flex flex-wrap items-center gap-2 mt-4">
-              <Badge className="text-blue-700 font-bold" variant="ghost">
-                {singleJob?.position} Positions
-              </Badge>
-              <Badge className="text-[#F83002] font-bold" variant="ghost">
-                {singleJob?.jobType}
-              </Badge>
-              <Badge className="text-[#7209b7] font-bold" variant="ghost">
-                {singleJob?.salary} LPA
-              </Badge>
+      <div className="flex flex-wrap items-center gap-2 mt-4">
+        <Badge className="bg-blue-100 text-blue-800">
+          {singleJob?.position} Positions
+        </Badge>
+        <Badge className="bg-red-100 text-red-800">{singleJob?.jobType}</Badge>
+        <Badge className="bg-green-100 text-green-800">
+          {singleJob?.salary} LPA
+        </Badge>
+      </div>
+
+      <div className="mt-6 p-6 bg-gray-50 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold text-gray-800">Job Details</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div className="flex items-center gap-3">
+            <Briefcase className="text-gray-500" size={22} />
+            <div>
+              <p className="text-gray-600">Role</p>
+              <p className="text-gray-800 font-medium">
+                {singleJob?.title || "N/A"}
+              </p>
             </div>
           </div>
-          <Button
-            onClick={isApplied ? null : applyJobHandler}
-            disabled={isApplied}
-            className={`rounded-lg mt-4 sm:mt-0 sm:ml-4 ${
-              isApplied
-                ? "bg-gray-600 cursor-not-allowed"
-                : "bg-[#7209b7] hover:bg-[#5f32ad]"
-            }`}
-          >
-            {isApplied ? "Already Applied" : "Apply Now"}
-          </Button>
+          <div className="flex items-center gap-3">
+            <MapPin className="text-gray-500" size={22} />
+            <div>
+              <p className="text-gray-600">Location</p>
+              <p className="text-gray-800 font-medium">
+                {singleJob?.location || "Remote"}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <DollarSign className="text-gray-500" size={22} />
+            <div>
+              <p className="text-gray-600">Salary</p>
+              <p className="text-gray-800 font-medium">
+                {singleJob?.salary ? `${singleJob.salary} LPA` : "N/A"}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Users className="text-gray-500" size={22} />
+            <div>
+              <p className="text-gray-600">Total Applicants</p>
+              <p className="text-gray-800 font-medium">
+                {singleJob?.applications?.length || 0}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Calendar className="text-gray-500" size={22} />
+            <div>
+              <p className="text-gray-600">Posted On</p>
+              <p className="text-gray-800 font-medium">
+                {singleJob?.createdAt
+                  ? singleJob.createdAt.split("T")[0]
+                  : "N/A"}
+              </p>
+            </div>
+          </div>
         </div>
-        <h1 className="border-b-2 border-b-gray-300 font-medium py-4 mt-6 text-xl text-gray-800">
-          Job Description
-        </h1>
-        <div className="my-4">
-          <h1 className="font-bold my-2 text-lg">
-            Role:
-            <span className="pl-4 font-normal text-gray-800">
-              {singleJob?.title}
-            </span>
-          </h1>
-          <h1 className="font-bold my-2 text-lg">
-            Location:
-            <span className="pl-4 font-normal text-gray-800">
-              {singleJob?.location}
-            </span>
-          </h1>
-          <h1 className="font-bold my-2 text-lg">
-            Description:
-            <span className="pl-4 font-normal text-gray-800">
-              {singleJob?.description}
-            </span>
-          </h1>
-          <h1 className="font-bold my-2 text-lg">
-            Experience:
-            <span className="pl-4 font-normal text-gray-800">
-              {singleJob?.experience} yrs
-            </span>
-          </h1>
-          <h1 className="font-bold my-2 text-lg">
-            Salary:
-            <span className="pl-4 font-normal text-gray-800">
-              {singleJob?.salary} LPA
-            </span>
-          </h1>
-          <h1 className="font-bold my-2 text-lg">
-            Total Applicants:
-            <span className="pl-4 font-normal text-gray-800">
-              {singleJob?.applications?.length}
-            </span>
-          </h1>
-          <h1 className="font-bold my-2 text-lg">
-            Posted Date:
-            <span className="pl-4 font-normal text-gray-800">
-              {singleJob?.createdAt.split("T")[0]}
-            </span>
-          </h1>
-        </div>
+      </div>
+
+      <div className="mt-6">
+        <h2 className="text-xl font-semibold text-gray-800">Job Description</h2>
+        <p className="text-gray-700 mt-2">
+          {singleJob?.description || "No description available."}
+        </p>
       </div>
     </div>
   );
