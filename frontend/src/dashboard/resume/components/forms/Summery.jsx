@@ -70,7 +70,7 @@ function Summery({ enabledNext }) {
   const onSave = async (e) => { 
     e.preventDefault();
   
-    if (loading) return; // Prevent multiple submissions
+    if (loading) return; 
     if (!resumeInfo?._id) {
       toast.error("Missing resume ID. Please try again.");
       console.error("Error: resumeId is undefined", resumeInfo);
@@ -87,7 +87,7 @@ function Summery({ enabledNext }) {
       const response = await fetch(apiUrl, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ summery: summery }), // Ensure correct data format
+        body: JSON.stringify({ summery: summery }), 
         credentials: "include",
       });
   
