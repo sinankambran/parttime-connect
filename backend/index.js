@@ -17,11 +17,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+console.log(process.env.VITE_CLIENT_URL);
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: process.env.VITE_CLIENT_URL,
   credentials: true,
 };
-
 app.use(cors(corsOptions));
 
 const PORT = process.env.PORT || 3000;
