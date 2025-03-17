@@ -4,7 +4,7 @@ import {getChatbotResponse} from "../controllers/chatbot.controller.js";
  
 const router = express.Router();
 
-router.route("/chat").post(isAuthenticated,getChatbotResponse);
+router.route("/chat").post(getChatbotResponse);
 
  
 

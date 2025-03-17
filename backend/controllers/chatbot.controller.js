@@ -1,289 +1,159 @@
-// import axios from 'axios';
-
-
-// const dataset = [
-//     "company_name: Parttime Connect",
-//     "founded_date: 2024-12-11",
-//     "founders: Abdul Basith, Muhammed Sinan",
-//     "ceo: Abdul Basith",
-//     "location.state: Kerala",
-//     "location.city: Perinthalmanna",
-//     "employees: 200",
-//     "mission: Providing an AI-powered job-seeking and recruiting platform inspired by LinkedIn.",
-//     "key_features: AI-powered job matching, Scalable architecture, Top-notch UI/UX, Real-time notifications, Secure authentication (OAuth, JWT)",
-//     "revenue_model.subscription_plans: Basic (Free), Premium ($9.99/month), Enterprise (Custom)",
-//     "revenue_model.ad_revenue: true",
-//     "revenue_model.recruiter_premium_access: true",
-//     "financials.profit_turnover: $2M estimated in first year",
-//     "financials.total_shares: 1000000",
-//     "financials.share_value: $5 per share",
-//     "financials.investors: Angel Investors, Venture Capital Firms",
-//     "technical_architecture.frontend.framework: React.js",
-//     "technical_architecture.frontend.state_management: Redux",
-//     "technical_architecture.frontend.UI_library: Tailwind CSS",
-//     "technical_architecture.frontend.SSR: false",
-//     "technical_architecture.backend.framework: Node.js",
-//     "technical_architecture.backend.API_layer: Express.js",
-//     "technical_architecture.backend.database: MongoDB (Atlas)",
-//     "technical_architecture.backend.authentication: OAuth 2.0, JWT",
-//     "technical_architecture.backend.caching: Redis",
-//     "technical_architecture.backend.microservices.user_management: Handles authentication and user profiles",
-//     "technical_architecture.backend.microservices.job_matching: AI-powered recommendation engine",
-//     "technical_architecture.backend.microservices.notifications: Real-time push notifications using WebSockets",
-//     "technical_architecture.backend.microservices.analytics: Tracks user engagement and trends",
-//     "technical_architecture.scalability.load_balancer: NGINX + AWS ALB",
-//     "technical_architecture.scalability.autoscaling: Horizontal Scaling with Kubernetes",
-//     "technical_architecture.scalability.CDN: Cloudflare",
-//     "technical_architecture.scalability.server_hosting: AWS EC2 & Lambda (Serverless Functions)",
-//     "traffic_statistics.daily_active_users: 50000",
-//     "traffic_statistics.monthly_visits: 1500000",
-//     "traffic_statistics.server_requests_per_second: 1000"
-// ]
-
-
-
-// async function searchDocument(query) {
-
-//     const relevantText = await findMostRelevantEntry(query);
-
-//     // Step 2: Generate a response based on the retrieved text and the query
-//     const response = await generateText(`${relevantText} ${query}`);
-//     return response;
-
-
-//     //first main function
-//     // to find the most relevent data entry from the dataset array
-    
-//     async function findMostRelevantEntry(query) {
-//         // Get the embedding for the query
-//         const queryEmbedding = await getEmbeddings(query);
-
-//         // Get embeddings for all dataset entries
-//         const datasetEmbeddings = await Promise.all(dataset.map(getEmbeddings));
-
-//         // Calculate cosine similarity between the query and each dataset entry
-//         let mostRelevantIndex = 0;
-//         let highestSimilarity = -1;
-
-//         for (let i = 0; i < datasetEmbeddings.length; i++) {
-//             const similarity = cosineSimilarity(queryEmbedding, datasetEmbeddings[i]);
-//             if (similarity > highestSimilarity) {
-//                 highestSimilarity = similarity;
-//                 mostRelevantIndex = i;
-//             }
-//         }
-
-//         return dataset[mostRelevantIndex];
-//     }
-
-
-
-
-//     //to convert to embedding function 
-//     async function getEmbeddings(text) {
-//         const data = await queryHuggingFace("sentence-transformers/all-MiniLM-L6-v2", text);
-//         return data[0];
-//     }
-
-
-//     function cosineSimilarity(vecA, vecB) {
-//         let dotProduct = 0;
-//         let normA = 0;
-//         let normB = 0;
-
-//         for (let i = 0; i < vecA.length; i++) {
-//             dotProduct += vecA[i] * vecB[i];
-//             normA += vecA[i] * vecA[i];
-//             normB += vecB[i] * vecB[i];
-//         }
-
-//         return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-//     }
-
-//     //second main function
-//     //it is used to generate a morebeautifullly text with info from the dataset
-//     async function generateText(prompt) {
-//         const data = await queryHuggingFace("distilbert/distilgpt2", prompt);
-//         return data[0].generated_text;
-//     }
-
-
-//     //api call function
-//     async function queryHuggingFace(model, inputs) {
-//         const response = await axios.post(
-//             `https://api-inference.huggingface.co/models/${model}`,
-//             { inputs },
-//             { headers: { Authorization: `Bearer ${process.env.HF_API_TOKEN}` } }
-//         );
-//         return response.data;
-//     }
-
-// }
-
-
-// async function queryLLM(prompt) {
-//     console.log(`prompt is ${prompt}`)
-//     try {
-//         const response = await axios.post(
-//             `https://api-inference.huggingface.co/models/${process.env.LLM_MODEL}`,
-//             { inputs: prompt },
-//             { headers: { Authorization: `Bearer ${process.env.HF_API_TOKEN}` } }
-//         );
-//         console.log(`The response is: ${JSON.stringify(response.data, null, 2)}`);
-
-//         return response.data;
-//     } catch (error) {
-//         console.error("Error querying LLM:");
-//         return { generated_text: "AI model is currently unavailable. Please try again later." };
-//     }
-// }
-
-
-
-// export const getChatbotResponse = async (req, res) => {
-//     try {
-//         const userQuery = req.body.message;
-//         console.log(`user message is ${userQuery}`)
-//         let responseText = '';
-
-//         const docSearch = await searchDocument(userQuery)
-//         if (Array.isArray(docSearch) && docSearch.length > 0) {
-//             responseText = `From our company data: ${docSearch[0].generated_text}`;
-//         } else {
-//             const aiResponse = await queryLLM(userQuery);
-//             responseText = aiResponse[0].generated_text || "Sorry, I couldn't find an answer.";
-
-//             return res.status(200).json({
-//                 message: "Response generated successfully",
-//                 response: responseText,
-//                 success: true,
-//             });
-
-
-//         }
-//     } catch (error) {
-//         console.error("Error in getChatbotResponse:", error);
-//         return res.status(500).json({
-//             message: "Internal server error",
-//             success: false,
-//         });
-//     }
-// };
-
-
 
 import axios from 'axios';
 import dotenv from 'dotenv';
+import { Job } from "../models/job.model.js";
+import { Dataset } from "../models/dataset.model.js";
+import mongoose from 'mongoose';
+
 
 // Load environment variables
 dotenv.config();
 
-const dataset = [
-    "company_name: Parttime Connect",
-    "founded_date: 2024-12-11",
-    "founders: Abdul Basith, Muhammed Sinan",
-    "ceo: Abdul Basith",
-    "location.state: Kerala",
-    "location.city: Perinthalmanna",
-    "employees: 200",
-    "mission: Providing an AI-powered job-seeking and recruiting platform inspired by LinkedIn.",
-    "key_features: AI-powered job matching, Scalable architecture, Top-notch UI/UX, Real-time notifications, Secure authentication (OAuth, JWT)",
-    "revenue_model.subscription_plans: Basic (Free), Premium ($9.99/month), Enterprise (Custom)",
-    "revenue_model.ad_revenue: true",
-    "revenue_model.recruiter_premium_access: true",
-    "financials.profit_turnover: $2M estimated in first year",
-    "financials.total_shares: 1000000",
-    "financials.share_value: $5 per share",
-    "financials.investors: Angel Investors, Venture Capital Firms",
-    "technical_architecture.frontend.framework: React.js",
-    "technical_architecture.frontend.state_management: Redux",
-    "technical_architecture.frontend.UI_library: Tailwind CSS",
-    "technical_architecture.frontend.SSR: false",
-    "technical_architecture.backend.framework: Node.js",
-    "technical_architecture.backend.API_layer: Express.js",
-    "technical_architecture.backend.database: MongoDB (Atlas)",
-    "technical_architecture.backend.authentication: OAuth 2.0, JWT",
-    "technical_architecture.backend.caching: Redis",
-    "technical_architecture.backend.microservices.user_management: Handles authentication and user profiles",
-    "technical_architecture.backend.microservices.job_matching: AI-powered recommendation engine",
-    "technical_architecture.backend.microservices.notifications: Real-time push notifications using WebSockets",
-    "technical_architecture.backend.microservices.analytics: Tracks user engagement and trends",
-    "technical_architecture.scalability.load_balancer: NGINX + AWS ALB",
-    "technical_architecture.scalability.autoscaling: Horizontal Scaling with Kubernetes",
-    "technical_architecture.scalability.CDN: Cloudflare",
-    "technical_architecture.scalability.server_hosting: AWS EC2 & Lambda (Serverless Functions)",
-    "traffic_statistics.daily_active_users: 50000",
-    "traffic_statistics.monthly_visits: 1500000",
-    "traffic_statistics.server_requests_per_second: 1000"
-];
+let dataset = null;
+let isDatasetLoaded = false;
+
+// Database connection with caching mechanism
+async function initializeDatabase() {
+    try {
+        if (mongoose.connection.readyState !== 1) {
+            await mongoose.connect(process.env.MONGO_URI, {
+                serverSelectionTimeoutMS: 5000,
+                socketTimeoutMS: 45000
+            });
+
+            // Load dataset once after connection
+            await refreshDataset();
+        }
+    } catch (error) {
+        console.error('Database connection error:', error);
+        process.exit(1); // Exit if initial connection fails
+    }
+}
+
+// Call initialization on server start
+initializeDatabase().catch(console.error);
+
+// Function to refresh dataset (call when needed)
+async function refreshDataset() {
+    try {
+        const result = await Dataset.findOne({}).maxTimeMS(10000);
+        dataset = result?.data || [];
+        isDatasetLoaded = true;
+        console.log('Dataset refreshed successfully');
+    } catch (error) {
+        console.error('Error refreshing dataset:', error);
+        throw error;
+    }
+}
+
+
+
 
 async function searchDocument(query) {
+
     try {
-        const relevantText = await findMostRelevantEntry(query);
-        const response = await generateText(`${relevantText} ${query}`);
+        if (!isDatasetLoaded) {
+            await refreshDataset();
+        }
+        const [relevantText, similarityScore] = await findMostRelevantEntry(query);
+        const response = await generateText(relevantText, query, similarityScore);
         return response;
     } catch (error) {
-        console.error("Error in searchDocument:", error);
+        console.error("Error in searchDocument:", error.response ? JSON.stringify(error.response.data, null, 2) : error.message);
         throw error;
     }
 
+    // 1. Find most relevant entry using Hugging Face similarity API
     async function findMostRelevantEntry(query) {
-        const queryEmbedding = await getEmbeddings(query);
-        const datasetEmbeddings = await Promise.all(dataset.map(getEmbeddings));
+        try {
+            // Get similarity scores from Hugging Face API
+            const similarityScores = await queryHuggingFace(
+                "sentence-transformers/all-mpnet-base-v2",
+                query,
+                dataset // Pass your entire dataset array here
+            );
 
-        let mostRelevantIndex = 0;
-        let highestSimilarity = -1;
+            // Find index of highest similarity score
+            let highestScore = -1;
+            let mostRelevantIndex = 0;
 
-        for (let i = 0; i < datasetEmbeddings.length; i++) {
-            const similarity = cosineSimilarity(queryEmbedding, datasetEmbeddings[i]);
-            if (similarity > highestSimilarity) {
-                highestSimilarity = similarity;
-                mostRelevantIndex = i;
+            similarityScores.forEach((score, index) => {
+                if (score > highestScore) {
+                    highestScore = score;
+                    mostRelevantIndex = index;
+                }
+            });
+
+            console.log("Most relevant index:", mostRelevantIndex);
+            console.log("Dataset entry:", dataset[mostRelevantIndex]);
+            return [dataset[mostRelevantIndex], similarityScores[mostRelevantIndex]];
+
+        } catch (error) {
+            console.error("Error in findMostRelevantEntry:", error.response ? JSON.stringify(error.response.data, null, 2) : error.message);
+            throw error;
+        }
+    }
+
+    // 2. Modified Hugging Face query function
+    async function queryHuggingFace(model, sourceSentence, sentences) {
+        try {
+            console.log("Using API Token:", process.env.HF_API_TOKEN ? "Token is set" : "Token is missing!");
+
+            const response = await axios.post(
+                `https://api-inference.huggingface.co/models/${model}`,
+                {
+                    source_sentence: sourceSentence,
+                    sentences: sentences
+                },
+                { headers: { Authorization: 'Bearer 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' } }
+            );
+
+            console.log("Similarity Scores:", response.data);
+            return response.data;
+
+        } catch (error) {
+            console.error("Full error response from querying hugginface function:", error.response ? JSON.stringify(error.response.data, null, 2) : error.message);
+            throw error;
+        }
+    }
+
+    // 3. Keep your existing generateText function
+    async function generateText(datasetInfo, prompt, similarityScore) {
+        try {
+            const data = await hugginfaceCustomTextgeneration("mistralai/Mistral-7B-Instruct-v0.3", datasetInfo, prompt, similarityScore);
+            function extractResponse(text) {
+                let match = text.match(/use the dataset information.*?create a response\s+(.*)/s);
+                return match ? match[1] : null;
             }
+            const match = extractResponse(data[0].generated_text)
+            return match
+        } catch (error) {
+            console.log("Error in generateText:", error.response ? JSON.stringify(error.response.data, null, 2) : error.message);
+            throw error;
+        }
+    }
+
+    async function hugginfaceCustomTextgeneration(model, datasetInfo, prompt, similarityScore) {
+        try {
+            console.log("Using API Token:", process.env.HF_API_TOKEN ? "Token is set" : "Token is missing!");
+            const newPrompt = `Create a response based on this query ..${prompt} .., ${datasetInfo} ..  this is the similar dataset info recived the similarityScore is ${similarityScore},analysie the similarity score also very well, if the query is a general purpose question then create response of your own (short response needed), else if the query conatins something linked with this company,this website, this startup , that measn they are reffering to the parttime connect company so use the dataset information which i provided you to create a response (short response)  `
+
+            const response = await axios.post(
+                `https://api-inference.huggingface.co/models/${model}`,
+
+                { inputs: newPrompt },
+
+                { headers: { Authorization: 'Bearer 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' } }
+            );
+
+            console.log("custom generated text:", response.data);
+            return response.data;
+
+        } catch (error) {
+            console.error("Full error response from hugginfaceCustomTextgeneration function:", error.response ? JSON.stringify(error.response.data, null, 2) : error.message);
+            throw error;
         }
 
-        return dataset[mostRelevantIndex];
-    }
-
-    async function getEmbeddings(text) {
-        try{
-            const data = await queryHuggingFace("sentence-transformers/all-MiniLM-L6-v2", text);
-            console.log("The response is from get embedding:", response.data);
-    
-            return data[0];
-        }catch(err){
-            console.log('the errror at getembeding ',err)
-
-        }
-       
-    }
-
-    function cosineSimilarity(vecA, vecB) {
-        let dotProduct = 0;
-        let normA = 0;
-        let normB = 0;
-
-        for (let i = 0; i < vecA.length; i++) {
-            dotProduct += vecA[i] * vecB[i];
-            normA += vecA[i] * vecA[i];
-            normB += vecB[i] * vecB[i];
-        }
-
-        return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-    }
-
-    async function generateText(prompt) {
-        const data = await queryHuggingFace("distilgpt2", prompt); // Use distilgpt2 for text generation
-        return data[0].generated_text;
-    }
-
-    async function queryHuggingFace(model, inputs) {
-        const response = await axios.post(
-            `https://api-inference.huggingface.co/models/${model}`,
-            { inputs },
-            { headers: { Authorization: `Bearer ${process.env.HF_API_TOKEN}` } }
-        );
-        return response.data;
     }
 }
 
@@ -293,26 +163,37 @@ async function queryLLM(prompt) {
         const response = await axios.post(
             `https://api-inference.huggingface.co/models/${process.env.LLM_MODEL}`,
             { inputs: prompt },
-            { headers: { Authorization: `Bearer ${process.env.HF_API_TOKEN}` } }
+            { headers: { Authorization: 'Bearer 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' } }
         );
         console.log(`The response is: ${JSON.stringify(response.data, null, 2)}`);
         return response.data;
     } catch (error) {
-        console.error("Error querying LLM:", error);
+        console.error("Error querying LLM:", error.response ? JSON.stringify(error.response.data, null, 2) : error.message);
         return { generated_text: "AI model is currently unavailable. Please try again later." };
     }
 }
 
 export const getChatbotResponse = async (req, res) => {
+    // let datasetDB = await Dataset.findOne({});
+    // const jobs = await Job.find().populate("company");
+    // const jobEntries = jobs.map(
+    //     (job) => `Job Title: ${job.title} | Description: ${job.description} | Company : ${job.company.name}`
+    //   );
+    //   datasetDB.data.push(...jobEntries);
+    //   await datasetDB.save(); 
+    //   console.log("database dataset",datasetDB)
+    await initializeDatabase();
+
     try {
-        const userQuery = req.body.message;
-        console.log(`user message is ${userQuery}`);
+        const userQuery = req.body.params;
+        console.log("req.body", req.body)
+        console.log(`user message is from getChatbot response main function ${userQuery}`);
 
         let responseText = '';
         const docSearch = await searchDocument(userQuery);
 
         if (docSearch) {
-            responseText = `From our company data: ${docSearch}`;
+            responseText = docSearch;
         } else {
             const aiResponse = await queryLLM(userQuery);
             responseText = aiResponse[0]?.generated_text || "Sorry, I couldn't find an answer.";
@@ -324,7 +205,7 @@ export const getChatbotResponse = async (req, res) => {
             success: true,
         });
     } catch (error) {
-        console.error("Error in getChatbotResponse:", error);
+        console.error("Error in getChatbotResponse:", error.response ? JSON.stringify(error.response.data, null, 2) : error.message);
         return res.status(500).json({
             message: "Internal server error",
             success: false,
