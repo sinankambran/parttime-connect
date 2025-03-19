@@ -11,8 +11,16 @@ import {
 import { Badge } from "./ui/badge";
 import { useSelector } from "react-redux";
 
+import useGetAppliedJobs from "@/hooks/useGetAppliedJobs";
+
 const AppliedJobTable = () => {
+  const { loading, error, refetch } = useGetAppliedJobs();
   const { allAppliedJobs = [] } = useSelector((store) => store.job);
+
+  console.log("Applied Jobs:", allAppliedJobs); 
+
+  if (loading) return <p>Loading applied jobs...</p>;
+  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <div className="overflow-x-auto">
@@ -31,6 +39,9 @@ const AppliedJobTable = () => {
             <tr>
               <td colSpan={4} className="text-center p-4">
                 You haven't applied for any jobs yet.
+                <button onClick={refetch} className="ml-2 text-blue-500">
+                  Refresh
+                </button>
               </td>
             </tr>
           ) : (

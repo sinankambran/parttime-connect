@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 console.log(process.env.VITE_CLIENT_URL);
 const corsOptions = {
-  origin: "*",
+  origin: "http://localhost:5173",
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -38,7 +38,9 @@ app.use("/api/v1/resumes", resumeRoute);
 app.get("/",(req,res) => {
   res.send("api working")
 } )
-app.listen(PORT, () => {
-  connectDB();
-  console.log(`Server running at port ${PORT}`);
+connectDB().then(() => {
+  console.log("Connnected to Mongodb Database");
+  app.listen(PORT, () => {
+    console.log("Server is running " + PORT);
+  });
 });
