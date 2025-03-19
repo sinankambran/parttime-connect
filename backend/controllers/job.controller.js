@@ -1,5 +1,6 @@
 import { Company } from "../models/company.model.js";
 import { Job } from "../models/job.model.js";
+import { Dataset } from "../models/dataset.model.js";
 
 export const postJob = async (req, res) => {
   try {
@@ -45,6 +46,11 @@ export const postJob = async (req, res) => {
       company: companies[0]._id,
       created_by: userId,
     });
+    let dataset = await Dataset.findOne({});
+    jobList=`Job Title: ${job.title} | Job Description: ${job.description} | Company : ${job.company}`
+    dataset.data.push(...jobList)
+    await dataset.save();
+
     return res.status(201).json({
       message: "New job created successfully.",
       job,
