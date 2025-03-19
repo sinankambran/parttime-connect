@@ -2,6 +2,7 @@ import { Company } from "../models/company.model.js";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
 import mongoose from "mongoose";
+import { Dataset } from "../models/dataset.model.js";
 
 export const registerCompany = async (req, res) => {
   try {
@@ -24,6 +25,9 @@ export const registerCompany = async (req, res) => {
       name: companyName,
       userId: req.id,
     });
+
+    let dataset= await Dataset.findOne({})
+    companyList=  `Organization title :${company.name??""} | Organization description : ${company.description??""} | Organization Location : ${company.location ?? ""}`
 
     return res.status(201).json({
       message: "Company registered successfully.",

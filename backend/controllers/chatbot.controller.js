@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { Job } from "../models/job.model.js";
 import { Dataset } from "../models/dataset.model.js";
 import mongoose from 'mongoose';
+import { Company } from '../models/company.model.js';
 
 
 // Load environment variables
@@ -33,6 +34,8 @@ async function initializeDatabase() {
 // Call initialization on server start
 initializeDatabase().catch(console.error);
 
+
+
 // Function to refresh dataset (call when needed)
 async function refreshDataset() {
     try {
@@ -45,6 +48,25 @@ async function refreshDataset() {
         throw error;
     }
 }
+
+
+// const UpdationCheckingDataset = mongoose.model('Dataset');
+
+async function watchDatabase() {
+    const db = mongoose.connection;
+    const changeStream = Dataset.watch(); // Use Dataset, NOT the collection directly
+
+    changeStream.on('change', async (change) => {
+        console.log('Database updated:', change);
+
+        // Fetch latest data after update
+      await refreshDataset();
+    });
+
+    console.log("Watching for database changes...");
+}
+
+watchDatabase();
 
 
 
@@ -121,8 +143,9 @@ async function searchDocument(query) {
     async function generateText(datasetInfo, prompt, similarityScore) {
         try {
             const data = await hugginfaceCustomTextgeneration("mistralai/Mistral-7B-Instruct-v0.3", datasetInfo, prompt, similarityScore);
+            console.log(data)
             function extractResponse(text) {
-                let match = text.match(/use the dataset information.*?create a response\s+(.*)/s);
+                let match = text.match(/the dataset info aligns with the user query keep that in mind.*?ont mix the response and give a bad response only give one response\s+(.*)/s);
                 return match ? match[1] : null;
             }
             const match = extractResponse(data[0].generated_text)
@@ -136,7 +159,7 @@ async function searchDocument(query) {
     async function hugginfaceCustomTextgeneration(model, datasetInfo, prompt, similarityScore) {
         try {
             console.log("Using API Token:", process.env.HF_API_TOKEN ? "Token is set" : "Token is missing!");
-            const newPrompt = `Create a response based on this query ..${prompt} .., ${datasetInfo} ..  this is the similar dataset info recived the similarityScore is ${similarityScore},analysie the similarity score also very well, if the query is a general purpose question then create response of your own (short response needed), else if the query conatins something linked with this company,this website, this startup , that measn they are reffering to the parttime connect company so use the dataset information which i provided you to create a response (short response)  `
+            const newPrompt = `Create a response based on this query ..${prompt},, this is the similar dataset info recived || ${datasetInfo} || ,, the similarityScore is ${similarityScore},if the similarity score is below 0.45 then just ignore the dataset info and create a response of your own , if the query is a general purpose question then create response of your own without using the dataset info  (short response needed), else if the query conatins something like | this company,this website, this startup | , that mean they are reffering to the parttime connect company so use the dataset information which i provided you to create a response (short response), here there will always be dataset information only create a meaniful response will the dataset info aligns with the user query keep that in mind, dont mix the response and give a bad response only give one response  `
 
             const response = await axios.post(
                 `https://api-inference.huggingface.co/models/${model}`,
@@ -157,22 +180,6 @@ async function searchDocument(query) {
     }
 }
 
-async function queryLLM(prompt) {
-    console.log(`prompt is ${prompt}`);
-    try {
-        const response = await axios.post(
-            `https://api-inference.huggingface.co/models/${process.env.LLM_MODEL}`,
-            { inputs: prompt },
-            { headers: { Authorization: 'Bearer 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' } }
-        );
-        console.log(`The response is: ${JSON.stringify(response.data, null, 2)}`);
-        return response.data;
-    } catch (error) {
-        console.error("Error querying LLM:", error.response ? JSON.stringify(error.response.data, null, 2) : error.message);
-        return { generated_text: "AI model is currently unavailable. Please try again later." };
-    }
-}
-
 export const getChatbotResponse = async (req, res) => {
     // let datasetDB = await Dataset.findOne({});
     // const jobs = await Job.find().populate("company");
@@ -182,7 +189,17 @@ export const getChatbotResponse = async (req, res) => {
     //   datasetDB.data.push(...jobEntries);
     //   await datasetDB.save(); 
     //   console.log("database dataset",datasetDB)
+    // const company = await Company.find()
+    // console.log(company)
+    // const companyEntries=company.map((company)=>{
+    //     return  `Organization title : ${company.name} | Organization description : ${company.description} | Organization location : ${company.location}`
+    // }) 
+    // console.log(companyEntries)
+    // datasetDB.data.push(...companyEntries);
+    // await datasetDB.save()
+    
     await initializeDatabase();
+    console.log(dataset)
 
     try {
         const userQuery = req.body.params;
@@ -194,10 +211,7 @@ export const getChatbotResponse = async (req, res) => {
 
         if (docSearch) {
             responseText = docSearch;
-        } else {
-            const aiResponse = await queryLLM(userQuery);
-            responseText = aiResponse[0]?.generated_text || "Sorry, I couldn't find an answer.";
-        }
+        } 
 
         return res.status(200).json({
             message: "Response generated successfully",
