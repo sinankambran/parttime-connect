@@ -71,7 +71,6 @@ export const login = async (req, res) => {
           success: false,
         });
       }
-
     } else {
       if (password !== user.password) {
         return res.status(400).json({
@@ -79,7 +78,6 @@ export const login = async (req, res) => {
           success: false,
         });
       }
-     
     }
 
     // check role is correct or not
