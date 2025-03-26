@@ -26,8 +26,19 @@ export const registerCompany = async (req, res) => {
       userId: req.id,
     });
 
-    let dataset= await Dataset.findOne({})
-    companyList=  `Organization title :${company.name??""} | Organization description : ${company.description??""} | Organization Location : ${company.location ?? ""}`
+    let dataset = await Dataset.findOne({});
+    if (!dataset) {
+      dataset = await Dataset.create({ data: [] });
+    }
+
+    const companyList = `Organization title: ${
+      company.name ?? ""
+    } | Organization description: ${
+      company.description ?? ""
+    } | Organization Location: ${company.location ?? ""}`;
+
+    dataset.data.push(companyList);
+    await dataset.save();
 
     return res.status(201).json({
       message: "Company registered successfully.",

@@ -9,6 +9,7 @@ import jobRoute from "./routes/job.route.js";
 import applicationRoute from "./routes/application.route.js";
 import resumeRoute from "./routes/resume.routes.js";
 import chatRoute from "./routes/chatbot.route.js";
+import adminRoute from "./routes/admin.route.js";
 dotenv.config({});
 
 const app = express();
@@ -34,12 +35,12 @@ app.use("/api/v1/job", jobRoute);
 app.use("/api/v1/application", applicationRoute);
 app.use("/api/v1/resumes", resumeRoute);
 app.use("/api/v1/chatbot", chatRoute);
-
+app.use("/api/v1/admin", adminRoute);
 
 //api working
-app.get("/",(req,res) => {
-  res.send("api working")
-} )
+app.get("/", (req, res) => {
+  res.send("api working");
+});
 connectDB().then(() => {
   console.log("Connnected to Mongodb Database");
   app.listen(PORT, () => {

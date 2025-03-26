@@ -24,6 +24,8 @@ const AdminJobs = lazy(() => import("./components/admin/AdminJobs"));
 const PostJob = lazy(() => import("./components/admin/PostJob"));
 const Applicants = lazy(() => import("./components/admin/Applicants"));
 const EditJob = lazy(() => import("./components/admin/Editjob"));
+const Users = lazy(() => import("./components/admin/UsersList"));
+
 
 
 
@@ -113,6 +115,14 @@ const appRouter = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Applicants />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/users",
+        element: (
+          <ProtectedRoute>
+            <Users />
           </ProtectedRoute>
         ),
       },

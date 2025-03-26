@@ -46,9 +46,10 @@ export const postJob = async (req, res) => {
       company: companies[0]._id,
       created_by: userId,
     });
+
     let dataset = await Dataset.findOne({});
-    jobList=`Job Title: ${job.title} | Job Description: ${job.description} | Company : ${job.company}`
-    dataset.data.push(...jobList)
+    let jobList = `Job Title: ${job.title} | Job Description: ${job.description} | Company : ${job.company}`;
+    dataset.data.push(jobList);
     await dataset.save();
 
     return res.status(201).json({

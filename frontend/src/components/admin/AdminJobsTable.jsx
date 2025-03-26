@@ -24,14 +24,17 @@ const AdminJobsTable = () => {
     const filteredJobs = allAdminJobs.filter((job) => {
       if (!searchJobByText) {
         return true;
-      }
+      }console.log(allAdminJobs);
       return (
         job?.title?.toLowerCase().includes(searchJobByText.toLowerCase()) ||
         job?.company?.name.toLowerCase().includes(searchJobByText.toLowerCase())
       );
+      
+      
     });
     setFilterJobs(filteredJobs);
-  }, [allAdminJobs, searchJobByText]);
+  }, [
+    , searchJobByText]);
 
   const handleDelete = (jobId) => {
     const confirmed = window.confirm(
